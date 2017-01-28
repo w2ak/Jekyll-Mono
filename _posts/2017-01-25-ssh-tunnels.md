@@ -2,11 +2,12 @@
 layout: post
 title: SSH tunnels
 author: Clément Durand
+toc: true
 ---
 
 Howto notes about opening and using ssh tunnels.
 
-## Connecting creating a ssh tunnel
+## Connecting somewhere through a ssh tunnel
 
 *Describes a connection from `neze` to `peugeot` assuming you have ssh access to `deiz`. Useful if `peugeot` is accessible from `deiz` but not from `neze`.*
 

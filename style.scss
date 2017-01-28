@@ -49,7 +49,10 @@ h1 {
   font-size: 30px;
   color: $h1-color;
   a {
-    color: inherit;
+    color: lighten($mono-color,20) !important;
+    &:hover, &:active {
+        color: $mono-color !important;
+    }
   }
 }
 

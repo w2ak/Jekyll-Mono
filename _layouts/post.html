@@ -6,8 +6,14 @@ layout: blog
  <div class="space-extra-small">
  </div>
 
+  {% if page.toc %}
+  <div class="toc">
+    {{ content | toc_only }}
+  </div>
+  {% endif %}
+
   <div class="entry">
-    {{ content }}
+    {{ content | inject_anchors }}
   </div>
 
   {% include disqus.html %}

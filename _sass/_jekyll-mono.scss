@@ -9,22 +9,27 @@
 
 .site-name {
     a {
-      color: $white;
+      color: $white !important;
       text-decoration: none;
     	cursor: pointer;
       &:hover{
-        color: darken($navbar-hover-color,20);
+        color: darken($navbar-hover-color,20) !important;
       }
     }
 }
 
  .post {
         a {
-         color: $mono-color;
+         color: $link-color;
          &:hover{
-           color: darken($mono-color,20);
+           color: darken($link-color,20);
          }
      }
+ }
+
+ .toc {
+     width: 20%;
+     position: fixed; top: 2%; left: 2%;
  }
  
  .post-heading {
@@ -301,3 +306,16 @@ button.button-primary:focus {
 	pointer-events: auto;
 }
 
+.section-nav {
+    background-color: $darkerGray;
+    margin: 5px 0;
+    padding: 10px 30px;
+    border: 1px solid $white;
+    border-radius: 3px;
+}
+
+.toc-entry.toc-h2 { margin-left: 10px; }
+.toc-entry.toc-h3 { margin-left: 20px; }
+.toc-entry.toc-h4,
+.toc-entry.toc-h5,
+.toc-entry.toc-h6 { display: none; }
