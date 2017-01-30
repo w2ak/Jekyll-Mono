@@ -42,7 +42,7 @@ mathjax: true
 
 # Your website URL (e.g. http://akshayagarwal007.github.io)
 # Used for Sitemap.xml and your RSS feed
-url:
+url: http://blog.neze.fr
 
 # If you're hosting your site at a Project repository on GitHub pages
 # (http://yourusername.github.io/repository-name)
@@ -54,7 +54,7 @@ baseurl: ""
 # !! You don't need to change any of the configuration flags below !!
 #
 
-permalink: /:title/
+permalink: /posts/:title/
 
 # Jekyll 3 now only supports Kramdown for Markdown
 kramdown:
