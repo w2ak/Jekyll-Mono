@@ -2,6 +2,9 @@
 layout: post
 title: Router configurations
 author: Clément Durand
+category:
+ - computer-science
+ - fav
 toc: true
 ---
 

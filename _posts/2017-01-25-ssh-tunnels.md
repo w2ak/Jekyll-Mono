@@ -2,6 +2,9 @@
 layout: post
 title: SSH tunnels
 author: Clément Durand
+category:
+ - computer-science
+ - notes
 toc: true
 ---
 

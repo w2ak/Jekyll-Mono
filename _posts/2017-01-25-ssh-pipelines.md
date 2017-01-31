@@ -1,6 +1,7 @@
 ---
 layout: post
 title: SSH and pipelines
+category: computer-science
 author: Clément Durand
 ---
 
