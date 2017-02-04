@@ -8,7 +8,9 @@ category:
 toc: true
 ---
 
-On Wednesday January 25th in class we started a network lab. The aim is to configure a whole network with our personal machines, choosing the address zones and setting up routing and firewall.
+*On Wednesday January 25th in class we started a network lab. The aim is to configure a whole network with our personal machines, choosing the address zones and setting up routing and firewall.*
+
+---
 
 # Map of the network
 

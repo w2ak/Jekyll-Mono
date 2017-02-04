@@ -8,7 +8,9 @@ category:
 toc: true
 ---
 
-Howto notes about opening and using ssh tunnels.
+*Howto notes about opening and using ssh tunnels.*
+
+---
 
 ## Connecting somewhere through a ssh tunnel
 

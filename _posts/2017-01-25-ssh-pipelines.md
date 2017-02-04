@@ -5,7 +5,9 @@ category: computer-science
 author: Clément Durand
 ---
 
-A few tips about combining pipelines and ssh.
+*A few tips about combining pipelines and ssh.*
+
+---
 
 ## Tared scp
 

@@ -5,7 +5,9 @@ category: computer-science
 author: Clément Durand
 ---
 
-Wrapping your mind arount iptables.
+*Wrapping your mind arount iptables.*
+
+---
 
 # Basic firewall configuration
 
