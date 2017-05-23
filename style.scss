@@ -19,7 +19,7 @@ html {
 
 body {
   background: $dark;
-  font: 18px $helvetica;
+  font: 100% $helvetica;
   line-height: 1.4;
   color: $lightGray;
 }
@@ -46,7 +46,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 h1 {
-  font-size: 30px;
+  font-size: 180%;
   color: $h1-color;
   a {
     color: lighten($mono-color,20) !important;
@@ -57,22 +57,23 @@ h1 {
 }
 
 h2 {
-  font-size: 24px;
+  font-size: 150%;
   color: $h2-color;
 }
 
 h3 {
-  font-size: 20px;
+  font-size: 120%;
   color: $h3-color;
 }
 
 h4 {
-  font-size: 18px;
+  font-size: 105%;
   color: $h4-color;
 }
 
 p {
   margin: 15px 0;
+  text-align: justify;
 }
 
 a {
@@ -219,13 +220,13 @@ nav {
   float: right;
   margin-top: 23px; 
   font-family: $helveticaNeue;
-  font-size: 18px;
+  font-size: 100%;
 
   @include mobile {
     float: none;
     margin-top: 9px;
     display: block;
-    font-size: 16px;
+    font-size: 90%;
   }
 
   a {
@@ -262,12 +263,18 @@ nav {
 
 .post {
   blockquote {
-    margin: 1.8em .8em;
+    margin: .8em .8em;
     border-left: 2px solid $gray;
-    padding: 0.1em 1em;
+    padding: 0em 0em .01em 1em;
     color: $gray;
-    font-size: 22px;
+    font-size: 100%;
     font-style: italic;
+
+    .signature {
+        font-style: normal;
+        color: $lightGray;
+        float: right;
+    }
   }
 
   .comments {
@@ -276,7 +283,7 @@ nav {
 
   .read-more {
     text-transform: uppercase;
-    font-size: 15px;
+    font-size: 95%;
   }
 }
 
