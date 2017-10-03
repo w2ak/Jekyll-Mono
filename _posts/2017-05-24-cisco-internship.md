@@ -15,7 +15,7 @@ author: Clément Durand
 
 # Initial goals
 
-*Crafting the world's fastest file server* was originally the goal of the internship. Based on a few simple ideas a project was created to implement a tcp content delivery server that would be as fast as possible.
+*Crafting the world's fastest file server* was originally the goal of the internship. Based on a few simple ideas a project was created to implement a TCP content delivery server that would be as fast as possible.
 
 ## Background ideas
 
@@ -39,3 +39,11 @@ The idea was then to try and implement this idea inside the open source Vector P
 
 > « The Vector Packet Processor (VPP) is a recently open-sourced technology enabling unprecedented packet forwarding performance. Part of the [FD.io](fd.io) project, and leveraging DPDK, it is the world fastest software based router, and is maintained by a growing open-source community including companies such as Intel, Cisco or Ericsson. »
 > <br/>*-- Pierre Pfister*{:.signature}
+
+An implementation of TCP was actually quite recently started in VPP by Dave Barrach and Florin Coras from Cisco. Even though it was still an ongoing work at the beginning of the internship, the first idea was to experiment with our idea on top of VPP's TCP stack, eventually fixing what needed to be fixed in TCP to make our project work.
+
+# Playing with TCP stacks
+
+# Discovering VPP
+
+# Reasons to change the TCP implementation in VPP

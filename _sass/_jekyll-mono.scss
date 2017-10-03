@@ -21,6 +21,9 @@
  .post {
         a {
          color: $link-color;
+         &.broken {
+             color: $broken-link-color !important;
+         }
          &:hover{
            color: darken($link-color,20);
          }

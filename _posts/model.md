@@ -2,6 +2,7 @@
 layout: post
 title: This is the title of my post
 category:
+ - wip
  - fav
  - computer-science
  - notes
