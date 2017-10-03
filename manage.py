@@ -24,6 +24,8 @@ def get_args():
     ap_.dest = 'cmd'
     ap_build = ap_.add_parser('build',help='Jekyll build the website.')
     ap_build.set_defaults(action=manage_build)
+    ap_serve = ap_.add_parser('serve',help='Jekyll locally server the website.')
+    ap_serve.set_defaults(action=manage_serve)
     return ap.parse_args()
 
 def manage_build(a,c):
@@ -34,6 +36,13 @@ def manage_build(a,c):
     result = subprocess.run(toexec)
     result.check_returncode()
     return
+
+def manage_serve(a,c):
+    toexec = [ 'screen', '-S', 'jekyll', '-d', '-m', 'jekyll', 'serve', '--incremental' ]
+    result = subprocess.run(toexec)
+    result.check_returncode()
+    return
+
 
 if __name__=='__main__':
     args = get_args()
