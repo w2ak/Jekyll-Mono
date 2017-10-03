@@ -1,0 +1,6 @@
+remote:
+  user: neze
+  address: vps
+  dir: blog
+  remote: origin
+  branch: master
