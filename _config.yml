@@ -86,6 +86,7 @@ exclude:
   - CNAME
 
 include:
+  - favicon.ico
   - .htaccess
   - .htpasswd
   - .htgroups
