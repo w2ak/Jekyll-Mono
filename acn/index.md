@@ -32,7 +32,7 @@ ACN902/INF678B: *Core IP Network*
 ### Practicals
 
 * 2017-09-22 BGP Practical
-  * [Clément](/acn/bgp/)
+  * [Clément]({% link acn/bgp-practical.md %})
 
 ## ACN906 Cellular
 
@@ -53,7 +53,7 @@ ACN906: *Cellular Access for High Data Rates*
 * 4G Air Interface
   * 2017-09-25 [Lecture 03](/share/acn/906/03-lte-phy-mac-rlc.pdf)
   * 2017-10-02 Lecture 03 (slides of Lecture 02)
-  * [TD notes](/acn/lte-air-interface.html)
+  * [TD notes]({% link acn/lte-air-interface.md %})
 
 ## ACN910 Protocols
 

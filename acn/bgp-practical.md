@@ -4,7 +4,8 @@ title: BGP Practical
 toc: true
 author: Clément Durand
 date: 2017-05-10
-permalink: /acn/bgp/
+permalink: /acn/bgp-practical.html
+back: /acn/
 
 ---
 
