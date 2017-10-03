@@ -1,6 +1,6 @@
 module Jekyll
   module Tags
-    class CensorBlock < Liquid::Tag
+    class CensorBlock < Liquid::Block
       def render(context)
         ""
       end
