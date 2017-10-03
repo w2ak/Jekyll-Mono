@@ -1,0 +1,7 @@
+#AuthType Basic
+#AuthName "Need to authenticate"
+#AuthBasicProvider file
+#AuthUserFile /home/neze/blog/_site/.htpasswd
+#AuthGroupFile /home/neze/blog/_site/.htgroups
+#Require valid-user
+Require all granted
