@@ -298,7 +298,6 @@ type `Enter` then paste the code.*
  copy running-config startup-config
 {% endfoldhl %}
 
-{% censor %}
 # Practical
 
 ## Multi-homed network
@@ -1248,4 +1247,3 @@ Actually, there is only one route in the router of AS8.
 This is because before advertising a new route to its neighbours, a BGP router
 will first advertise to every neighbour (no filter) the fact that it is removing
 the old route.
-{% endcensor %}
