@@ -1253,3 +1253,22 @@ Actually, there is only one route in the router of AS8.
 This is because before advertising a new route to its neighbours, a BGP router
 will first advertise to every neighbour (no filter) the fact that it is removing
 the old route.
+
+### Question 2.4
+
+Internal BGP settings (OSPF settings, actually) in router `AS9.4` consider the
+link `AS9.4-AS9.3` to cost less than `AS9.4-AS9.2`. This forces the choice of
+`AS7` without having to tie break.
+
+### Question 2.5
+
+Choice of `AS8` as a next hop can be forced by configuring `AS9.4`.
+
+{% foldhl text linenos %}
+ enable
+ configure terminal
+ interface GigabitEthernet0/2
+  ip ospf cost 12
+  exit
+ exit
+{% endfoldhl %}
