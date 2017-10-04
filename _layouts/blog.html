@@ -28,8 +28,8 @@
             {% if page.category contains "wip" %}
             <span class="meta"><i class="fa fa-spinner fa-spin"></i> (Work In Progress) </span>
             {% endif %}
-            <span class="meta">Posted by <a href="{{ site.baseurl }}/about"> {{page.author}}
-            </a> on {{ page.date | date: "%B %e, %Y" }}
+            <span class="meta">Posted by <a href="{{ site.baseurl }}/about">{% if page.author %}{{page.author}}{% else %}{{site.author}}{% endif %}
+              </a>{% if page.date %} on {{ page.date | date: "%B %e, %Y" }}{% endif %}
             </span>
             <div style="float:right"><a href="{% if page.back %}{{page.back}}{% else %}{{ site.baseurl }}/{% endif %}">back&nbsp;<i class="fa fa-home"></i></a></div>
         </div>
