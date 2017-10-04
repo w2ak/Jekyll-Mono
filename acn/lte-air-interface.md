@@ -73,11 +73,40 @@ back: /acn/
   frequency.
 
   * What are the typical MIMO configurations?
+
+  Typical [MIMO][mimo] configurations are `2x2`, `2x4`, `4x4`, i.e., 2 or 4
+  transmitters and receivers
+  ([page 19](/share/acn/906/03-lte-phy-mac-rlc.pdf#page=30)).
+
   * What are the potential gains in MIMO?
+
+  Potential gains ([page 33](/share/acn/906/03-lte-phy-mac-rlc.pdf#page=33)) are
+  a diversity gain (multiple copies implies more robustness), an array gain
+  ([beamforming][beamforming] on transmission side, and better [SNR][snr] on
+  reception side), and a multiplexing gain.
+
   * What is the difference between open loop and closed loop schemes?
+
+  In closed loop schemes, the reverse link is used to give feedback to the
+  transmitter and improve the flow by adjusting parameters.
+
   * What are the advantages and drawbacks of beamforming?
+
+  [Beamforming][beamforming] improves the useful signal power but requires
+  UE-specific pilot signals.
+
   * Describe the FDD radio frame structure with normal prefix.
+
+  One frame is `Tf=307200Ts=10ms` long and contains `10` subframes of `2` slots
+  of `0.5ms`.
+
+  Each slot contains `7` [OFDMA][ofdma]/[SC-FDMA][scfdma] symbols with their
+  prefix. The prefix is `160Ts` long and the next ones are `144Ts` long.
+
   * What is a RE? a RB?
+
+  One resource block is `7` [OFDMA][ofdma]/[SC-FDMA][scfdma] symbol by `12`
+  sub-carriers of `15kHz`, i.e., `7x12` resource elements.
 
 ## Physical, transport and logical channels
 
@@ -122,15 +151,18 @@ Indicate on figures 1 and 2 the physical, transport and logical channel used.
   * Discuss the validity of the preceding result.
 
 [lecture]: /share/acn/906/03-lte-phy-mac-rlc.pdf
-[ofdma]: /404
-[scfdma]: /404
-[ofdm]: /404
-[bpsk]: /404
-[qpsk]: /404
-[16qam]: /404
-[64qam]: /404
-[tdd]: /404
-[fdd]: /404
-[isi]: /404
-[papr]: /404
-[sfn]: /404
+[ofdma]: https://en.wikipedia.org/wiki/Orthogonal_frequency-division_multiple_access
+[scfdma]: https://en.wikipedia.org/wiki/Single-carrier_FDMA
+[ofdm]: https://en.wikipedia.org/wiki/Orthogonal_frequency-division_multiplexing
+[bpsk]: https://en.wikipedia.org/wiki/Phase-shift_keying#Binary_phase-shift_keying_.28BPSK.29
+[qpsk]: https://en.wikipedia.org/wiki/Phase-shift_keying#Quadrature_phase-shift_keying_.28QPSK.29
+[16qam]: https://en.wikipedia.org/wiki/Quadrature_amplitude_modulation#Quantized_QAM
+[64qam]: https://en.wikipedia.org/wiki/Quadrature_amplitude_modulation#Quantized_QAM
+[tdd]: https://en.wikipedia.org/wiki/Duplex_(telecommunications)#Time-division_duplexing
+[fdd]: https://en.wikipedia.org/wiki/Duplex_(telecommunications)#Frequency-division_duplexing
+[isi]: https://en.wikipedia.org/wiki/Intersymbol_interference
+[papr]: https://en.wikipedia.org/wiki/Crest_factor
+[sfn]: https://en.wikipedia.org/wiki/Single-frequency_network
+[mimo]: https://en.wikipedia.org/wiki/MIMO
+[beamforming]: https://en.wikipedia.org/wiki/Beamforming
+[snr]: https://en.wikipedia.org/wiki/Signal-to-noise_ratio
