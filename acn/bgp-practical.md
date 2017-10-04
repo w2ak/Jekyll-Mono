@@ -404,7 +404,13 @@ Peers can still bypass path prepending with their local preferences.
 Some AS do not see every possible route towards AS10 because, in the
 advertisement process, every router only advertises its best path towards AS10.
 For example, `1-5-8-9-10` will not be found in the table of AS1 because the best
-path from AS5 to AS10 is actually `5-6-10`.
+path from AS5 to AS10 is actually `5-6-10`. *Every router can only have one path
+per neighbor.*
+
+Another important element is Poison Reverse. AS1 uses `1-5-6-10` as its best
+path. It will not advertise it to AS5 __because the next hop in this path is
+AS5__. AS5 only sees paths for next hops AS6 and AS8. *Every router can only
+have __at most__ one path per neighbor.*
 
 #### Theoretical routes advertisement
 
