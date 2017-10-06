@@ -32,7 +32,9 @@ ACN902/INF678B: *Core IP Network*
 ### Practicals
 
 * 2017-09-22 BGP Practical
-  * [Clément]({% link acn/bgp-practical.md %})
+  * [Initial config]({% link acn/bgp-practical/config.md %})
+  * [Clément]({% link acn/bgp-practical/clement.md %})
+  * [Carolina]({% link acn/bgp-practical/carolina.md %})
 
 ## ACN906 Cellular
 

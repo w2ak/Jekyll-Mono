@@ -3,306 +3,15 @@ layout: post
 title: BGP Practical
 toc: true
 author: Clément Durand
-date: 2017-05-10
-permalink: /acn/bgp-practical.html
+date: 2017-10-05
+permalink: /acn/bgp-practical/clement.html
 back: /acn/
 
 ---
 
-# Initial config
+# Multi-homed network
 
-*To apply this initial configuration, open the terminal of the correct router,
-type `Enter` then paste the code.*
-
-## AS1
-
-{% foldhl text linenos %}
- enable
- configure terminal
- hostname AS1
- router bgp 1
-  bgp router-id 1.1.1.1
-  bgp log-neighbor-changes
-  bgp bestpath compare-routerid
-  network 1.0.0.0
-  neighbor 100.0.12.2 remote-as 2
-  neighbor 100.0.13.3 remote-as 3
-  neighbor 100.0.14.4 remote-as 4
-  neighbor 100.0.15.5 remote-as 5
-  exit
- exit
- copy running-config startup-config
-{% endfoldhl %}
-
-## AS2
-
-{% foldhl text linenos %}
- enable
- configure terminal
- hostname AS2
- router bgp 2
-  bgp router-id 2.2.2.2
-  bgp log-neighbor-changes
-  bgp bestpath compare-routerid
-  network 2.0.0.0
-  neighbor 100.0.0.10 remote-as 10
-  neighbor 100.0.12.1 remote-as 1
-  neighbor 100.0.23.3 remote-as 3
-  exit
- exit
- copy running-config startup-config
-{% endfoldhl %}
-
-## AS3
-
-{% foldhl text linenos %}
- enable
- configure terminal
- hostname AS3
- router bgp 3
-  bgp router-id 3.3.3.3
-  bgp log-neighbor-changes
-  bgp bestpath compare-routerid
-  network 3.0.0.0
-  neighbor 100.0.13.1 remote-as 1
-  neighbor 100.0.23.2 remote-as 2
-  neighbor 100.0.36.6 remote-as 6
-  exit
- exit
- copy running-config startup-config
-{% endfoldhl %}
-
-## AS4
-
-{% foldhl text linenos %}
- enable
- configure terminal
- hostname AS4
- router bgp 4
-  bgp router-id 4.4.4.4
-  bgp log-neighbor-changes
-  bgp bestpath compare-routerid
-  network 4.0.0.0
-  neighbor 100.0.14.1 remote-as 1
-  neighbor 100.0.47.7 remote-as 7
-  exit
- exit
- copy running-config startup-config
-{% endfoldhl %}
-
-## AS5
-
-{% foldhl text linenos %}
- enable
- configure terminal
- hostname AS5
- router bgp 5
-  bgp router-id 5.5.5.5
-  bgp log-neighbor-changes
-  bgp bestpath compare-routerid
-  network 5.0.0.0
-  neighbor 100.0.15.1 remote-as 1
-  neighbor 100.0.56.6 remote-as 6
-  neighbor 100.0.58.8 remote-as 8
-  exit
- exit
- copy running-config startup-config
-{% endfoldhl %}
-
-## AS6
-
-{% foldhl text linenos %}
- enable
- configure terminal
- hostname AS6
- router bgp 6
-  bgp router-id 6.6.6.6
-  bgp log-neighbor-changes
-  bgp bestpath compare-routerid
-  network 6.0.0.0
-  neighbor 100.0.0.10 remote-as 10
-  neighbor 100.0.36.3 remote-as 3
-  neighbor 100.0.56.5 remote-as 5
-  exit
- exit
- copy running-config startup-config
-{% endfoldhl %}
-
-## AS7
-
-{% foldhl text linenos %}
- enable
- configure terminal
- hostname AS7
- router bgp 7
-  bgp router-id 7.7.7.7
-  bgp log-neighbor-changes
-  bgp bestpath compare-routerid
-  network 7.0.0.0
-  neighbor 100.0.47.4 remote-as 4
-  neighbor 100.0.79.9 remote-as 9
-  exit
- exit
- copy running-config startup-config
-{% endfoldhl %}
-
-## AS8
-
-{% foldhl text linenos %}
- enable
- configure terminal
- hostname AS8
- router bgp 8
-  bgp router-id 8.8.8.8
-  bgp log-neighbor-changes
-  bgp bestpath compare-routerid
-  network 8.0.0.0
-  neighbor 100.0.58.5 remote-as 5
-  neighbor 100.0.89.9 remote-as 9
-  exit
- exit
- copy running-config startup-config
-{% endfoldhl %}
-
-## AS9
-
-### AS9-1
-
-{% foldhl text linenos %}
- enable
- configure terminal
- hostname AS9-1
- mpls label protocol ldp
- no mpls ip propagate-ttl
- router ospf 9
-  network 9.0.0.0 0.255.255.255 area 0
-  network 100.9.0.0 0.0.255.255 area 0
-  exit
- router bgp 9
-  bgp router-id 9.9.9.1
-  bgp log-neighbor-changes
-  bgp bestpath compare-routerid
-  network 9.0.0.0
-  neighbor 9.9.9.2 remote-as 9
-  neighbor 9.9.9.2 update-source Loopback0
-  neighbor 9.9.9.2 next-hop-self
-  neighbor 9.9.9.2 send-community
-  neighbor 9.9.9.3 remote-as 9
-  neighbor 9.9.9.3 update-source Loopback0
-  neighbor 9.9.9.3 next-hop-self
-  neighbor 9.9.9.3 send-community
-  neighbor 100.0.0.10 remote-as 10
-  exit
- mpls ldp router-id Loopback0
- exit
- copy running-config startup-config
-{% endfoldhl %}
-
-### AS9-2
-
-{% foldhl text linenos %}
- enable
- configure terminal
- hostname AS9-2
- mpls label protocol ldp
- no mpls ip propagate-ttl
- router ospf 9
-  network 9.0.0.0 0.255.255.255 area 0
-  network 100.9.0.0 0.0.255.255 area 0
-  exit
- router bgp 9
-  bgp router-id 9.9.9.2
-  bgp log-neighbor-changes
-  bgp bestpath compare-routerid
-  network 9.0.0.0
-  neighbor 9.9.9.1 remote-as 9
-  neighbor 9.9.9.1 update-source Loopback0
-  neighbor 9.9.9.1 next-hop-self
-  neighbor 9.9.9.1 send-community
-  neighbor 9.9.9.3 remote-as 9
-  neighbor 9.9.9.3 update-source Loopback0
-  neighbor 9.9.9.3 next-hop-self
-  neighbor 9.9.9.3 send-community
-  neighbor 100.0.89.8 remote-as 8
-  exit
- mpls ldp router-id Loopback0
- exit
- copy running-config startup-config
-{% endfoldhl %}
-
-### AS9-3
-
-{% foldhl text linenos %}
- enable
- configure terminal
- hostname AS9-3
- mpls label protocol ldp
- no mpls ip propagate-ttl
- router ospf 9
-  network 9.0.0.0 0.255.255.255 area 0
-  network 100.9.0.0 0.0.255.255 area 0
-  exit
- router bgp 9
-  bgp router-id 9.9.9.3
-  bgp log-neighbor-changes
-  bgp bestpath compare-routerid
-  network 9.0.0.0
-  neighbor 9.9.9.1 remote-as 9
-  neighbor 9.9.9.1 update-source Loopback0
-  neighbor 9.9.9.1 next-hop-self
-  neighbor 9.9.9.1 send-community
-  neighbor 9.9.9.2 remote-as 9
-  neighbor 9.9.9.2 update-source Loopback0
-  neighbor 9.9.9.2 next-hop-self
-  neighbor 9.9.9.2 send-community
-  neighbor 100.0.79.7 remote-as 7
-  exit
- mpls ldp router-id Loopback0
- exit
- copy running-config startup-config
-{% endfoldhl %}
-
-### AS9-4
-
-{% foldhl text linenos %}
- enable
- configure terminal
- hostname AS9-4
- multilink bundle-name authenticated
- mpls label protocol ldp
- router ospf 9
-  network 9.0.0.0 0.255.255.255 area 0
-  network 100.9.0.0 0.0.255.255 area 0
-  exit
- mpls ldp router-id Loopback0
- exit
- copy running-config startup-config
-{% endfoldhl %}
-
-## AS10
-
-{% foldhl text linenos %}
- enable
- configure terminal
- hostname AS10
- router bgp 10
-  bgp router-id 10.10.10.10
-  bgp log-neighbor-changes
-  bgp bestpath compare-routerid
-  network 10.0.0.0
-  neighbor 100.0.0.2 remote-as 2
-  neighbor 100.0.0.6 remote-as 6
-  neighbor 100.0.0.9 remote-as 9
-  exit
- exit
- copy running-config startup-config
-{% endfoldhl %}
-
-# Practical
-
-## Multi-homed network
-
-### Question 1.1
+## Question 1.1
 
 *Configure the BGP router of AS10 to prohibit transit.*
 
@@ -330,7 +39,7 @@ output.
  exit
 {% endfoldhl %}
 
-### Question 1.2
+## Question 1.2
 
 *Explain the changes needed in the BGP configuration so as to route **outgoing**
 internet traffic from AS10 through either AS9 or AS6 but not through AS2. AS2
@@ -354,7 +63,7 @@ prefered.
  exit
 {% endfoldhl %}
 
-### Question 1.3
+## Question 1.3
 
 *Explain the changes needed so as to route the **incoming** traffic through AS6
 or AS9 and not through AS2.*
@@ -373,13 +82,13 @@ Path prepending can be used to shape incoming traffic.
  exit
 {% endfoldhl %}
 
-### Question 1.4
+## Question 1.4
 
 *How can the shaping applied by AS10 for the incoming traffic be bypassed by other ASs?*
 
 Peers can still bypass path prepending with their local preferences.
 
-### Questions 1.1-4 reset
+## Questions 1.1-4 reset
 
 {% foldhl text linenos %}
  enable
@@ -397,9 +106,9 @@ Peers can still bypass path prepending with their local preferences.
  exit
 {% endfoldhl %}
 
-## Carriers
+# Carriers
 
-### Question 2.1
+## Question 2.1
 
 Some AS do not see every possible route towards AS10 because, in the
 advertisement process, every router only advertises its best path towards AS10.
@@ -412,7 +121,7 @@ path. It will not advertise it to AS5 __because the next hop in this path is
 AS5__. AS5 only sees paths for next hops AS6 and AS8. *Every router can only
 have __at most__ one path per neighbor.*
 
-#### Theoretical routes advertisement
+### Theoretical routes advertisement
 
 {% foldhl text linenos %}
  Step 0.
@@ -510,7 +219,7 @@ In the end, we expect the following paths towards 10.
  +-----+--------+------+
 {% endfoldhl %}
 
-#### Check
+### Check
 
 This is confirmed by running the following in each AS BGP router.
 
@@ -519,9 +228,9 @@ This is confirmed by running the following in each AS BGP router.
  show ip bgp all
 {% endfoldhl %}
 
-### Question 2.2
+## Question 2.2
 
-#### AS1
+### AS1
 
 {% foldhl text linenos %}
  enable
@@ -599,7 +308,7 @@ This could be simplified into
  exit
 {% endfoldhl %}
 
-#### AS2
+### AS2
 
 {% foldhl text linenos %}
  enable
@@ -629,7 +338,7 @@ This could be simplified into
  exit
 {% endfoldhl %}
 
-#### AS3
+### AS3
 
 {% foldhl text linenos %}
  enable
@@ -674,7 +383,7 @@ This could be simplified into
  exit
 {% endfoldhl %}
 
-#### AS4
+### AS4
 
 {% foldhl text linenos %}
  enable
@@ -710,7 +419,7 @@ This could be simplified into
  exit
 {% endfoldhl %}
 
-#### AS5
+### AS5
 
 {% foldhl text linenos %}
  enable
@@ -755,7 +464,7 @@ This could be simplified into
  exit
 {% endfoldhl %}
 
-#### AS6
+### AS6
 
 {% foldhl text linenos %}
  enable
@@ -800,7 +509,7 @@ This could be simplified into
  exit
 {% endfoldhl %}
 
-#### AS7
+### AS7
 
 {% foldhl text linenos %}
  enable
@@ -836,7 +545,7 @@ This could be simplified into
  exit
 {% endfoldhl %}
 
-#### AS8
+### AS8
 
 {% foldhl text linenos %}
  enable
@@ -872,7 +581,7 @@ This could be simplified into
  exit
 {% endfoldhl %}
 
-#### AS9-1
+### AS9-1
 
 {% foldhl text linenos %}
  enable
@@ -898,7 +607,7 @@ This could be simplified into
  exit
 {% endfoldhl %}
 
-#### AS9-2
+### AS9-2
 
 {% foldhl text linenos %}
  enable
@@ -922,7 +631,7 @@ This could be simplified into
  exit
 {% endfoldhl %}
 
-#### AS9-3
+### AS9-3
 
 {% foldhl text linenos %}
  enable
@@ -946,7 +655,7 @@ This could be simplified into
  exit
 {% endfoldhl %}
 
-#### AS10
+### AS10
 
 {% foldhl text linenos %}
  enable
@@ -962,9 +671,9 @@ This could be simplified into
  exit
 {% endfoldhl %}
 
-### Question 2.3
+## Question 2.3
 
-#### Routes towards AS10
+### Routes towards AS10
 
 {% foldhl text linenos %}
  Step 0.
@@ -1112,7 +821,7 @@ This can be checked in the BGP router of AS1.
        rx pathid: 0, tx pathid: 0
 {% endfoldhl %}
 
-#### Routes towards AS1
+### Routes towards AS1
 
 {% foldhl text linenos %}
  Step 0.
@@ -1219,7 +928,7 @@ This can be checked in the BGP router of AS10.
        rx pathid: 0, tx pathid: 0x0
 {% endfoldhl %}
 
-#### Route from AS8 to AS10
+### Route from AS8 to AS10
 
 According to the detailed theoretical propagation of routes towards AS10,
 routes in AS8 should be
@@ -1254,13 +963,13 @@ This is because before advertising a new route to its neighbours, a BGP router
 will first advertise to every neighbour (no filter) the fact that it is removing
 the old route.
 
-### Question 2.4
+## Question 2.4
 
 Internal BGP settings (OSPF settings, actually) in router `AS9.4` consider the
 link `AS9.4-AS9.3` to cost less than `AS9.4-AS9.2`. This forces the choice of
 `AS7` without having to tie break because of Hot potato.
 
-### Question 2.5
+## Question 2.5
 
 Choice of `AS8` as a next hop can be forced by configuring `AS9.4`.
 
