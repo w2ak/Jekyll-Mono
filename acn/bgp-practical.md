@@ -1258,7 +1258,7 @@ the old route.
 
 Internal BGP settings (OSPF settings, actually) in router `AS9.4` consider the
 link `AS9.4-AS9.3` to cost less than `AS9.4-AS9.2`. This forces the choice of
-`AS7` without having to tie break.
+`AS7` without having to tie break because of Hot potato.
 
 ### Question 2.5
 
