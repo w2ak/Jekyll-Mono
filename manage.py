@@ -22,13 +22,23 @@ def get_args():
     ap_ = ap.add_subparsers(help='SubCommand', metavar='cmd')
     ap_.required = True
     ap_.dest = 'cmd'
-    ap_build = ap_.add_parser('build',help='Jekyll build the website.')
+    ap_build = ap_.add_parser('build',help='Jekyll build the local website.')
     ap_build.set_defaults(action=manage_build)
+    ap_update = ap_.add_parser('update',help='Jekyll update the remote website.')
+    ap_update.set_defaults(action=manage_update)
     ap_serve = ap_.add_parser('serve',help='Jekyll locally server the website.')
     ap_serve.set_defaults(action=manage_serve)
+    ap_tar = ap_.add_parser('tar',help='Build and archive the build folder.')
+    ap_tar.set_defaults(action=manage_tar)
     return ap.parse_args()
 
 def manage_build(a,c):
+    toexec = [ 'jekyll', 'build' ]
+    result = subprocess.run(toexec)
+    result.check_returncode()
+    return
+
+def manage_update(a,c):
     server = '{:}@{:}'.format(cfg.remote.user,cfg.remote.address)
     command = 'cd "{:}" && git pull "{:}" "{:}" && jekyll build'\
             .format(cfg.remote.dir,cfg.remote.remote,cfg.remote.branch)
@@ -39,6 +49,13 @@ def manage_build(a,c):
 
 def manage_serve(a,c):
     toexec = [ 'screen', '-S', 'jekyll', '-d', '-m', 'jekyll', 'serve', '--incremental' ]
+    result = subprocess.run(toexec)
+    result.check_returncode()
+    return
+
+def manage_tar(a,c):
+    manage_build(a,c)
+    toexec = [ 'tar', '-C', '_site', '-c', '-z', '-f', 'www.tar.gz', '.' ]
     result = subprocess.run(toexec)
     result.check_returncode()
     return
