@@ -14,6 +14,8 @@ permalink: /acn/
 
 # Description
 
+* WordPress: [acn2017@wp.imt.fr](https://acn2017.wp.imt.fr/)
+
 # Courses
 
 ## ACN902 Core IP
@@ -35,6 +37,8 @@ ACN902/INF678B: *Core IP Network*
   * [Initial config]({% link acn/bgp-practical/config.md %})
   * [Clément]({% link acn/bgp-practical/clement.md %})
   * [Carolina]({% link acn/bgp-practical/carolina.md %})
+* 2017-10-13 MPLS Practical
+  * [Carolina]({% link acn/mpls-practical/carolina-clement.md %})
 
 ## ACN906 Cellular
 
@@ -88,7 +92,9 @@ ACN910/INF672: *Protocol Verification and Safety*
     * [Spin doc&examples](/share/acn/910/spin.zip)
   * 2017-09-29 [Lecture 03](/share/acn/910/lecture03.pdf)
     * [Exercises](/share/acn/910/exercises.zip)
-  * 2017-10-06 [Lecture 04](/404){:class="broken"}
+  * 2017-10-06 [Lecture 04](/share/acn/910/lecture04.pdf)
+    * [TCP Full model](/share/acn/910/tcp-full.pml)
+    * [TLS state machine](/share/acn/910/tls.pml)
 * Program Verification: Properties, Tools and Techniques
   * 2017-10-13 [Lecture 05](/404){:class="broken"}
   * 2017-10-20 [Lecture 06](/404){:class="broken"}
@@ -113,8 +119,13 @@ ACN 913: *Propagation in Graphs*
 
 * 2017-09-29 Galton Watson processes
   * [Clément](/share/acn/913/tp/01-Galton-Watson-TP.html)
+  * [Correction](/404){:class="broken")
 * 2017-10-13 Erdös-Rényi graphs
   * [Clément](/share/acn/913/tp/02-Erdos-Renyi-TP.html){:class="broken"}
+  * [Correction](/404){:class="broken")
+* 2017-10-16 Epidemic Competition
+  * [Clément](/share/acn/913/tp/03-Competitive-Epidemics-TP.html){:class="broken"}
+  * [Correction](/404){:class="broken")
 
 ## Resources
 
