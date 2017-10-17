@@ -111,25 +111,89 @@ back: /acn/
 ## Physical, transport and logical channels
 
   * Are there dedicated channels in LTE?
+
+  At the MAC level, channels are either dedicated (to one UE) or shared (with every UE).
+  In LTE there is no dedicated channel at the physical and transport level.
+
+  Regarding logical channels, dedicated channels (i.e. with [RRC][rrc] connection) are
+  [DCCH][dcch] and [DTCH][dtch].  Common channel (no [RRC][rrc] connection) is [CCCH][ccch].
+
   * How does a UE acquire the physical cell identity?
+
+  The [PCI][pci] is divided in 3 groups of 168 possibilities. The [SSS][sss] broadcasts
+  a sequence among 3 and the [PSS][pss] broadcasts a pseudo-random sequence among 168
+  possibilities ([page 48](/share/acn/906/03-lte-phy-mac-rlc.pdf#page=48)).
+
   * How does a UE learn the signal bandwidth?
+
+  The bandwidth is included in the [PBCH][pbch] whose position does not depend on the
+  bandwidth.
+
   * How many OFDM symbols are occupied by PDCCH?
-  * How is a UE informedof this number?
+
+  [PDCCH][pdcch] uses ([page 46](/share/acn/906/03-lte-phy-mac-rlc.pdf#page=46)) between
+  1 and 3 [OFDM][ofdm] symbols.
+
+  * How is a UE informed of this number?
+
+  This number of symbols is signaled by the [PCFICH][pcfich].
+
   * On which physical channel is done resource allocation?
+
+  Resource allocation is done on the [PDCCH][pdcch] with [DCI][dci] messages.
+
   * What is the difference between PUSCH and PUCCH?
+
+  Both [PUSCH][pusch] and [PUCCH][pucch] are used to carry [UCI][uci], but
+  [PUSCH][pusch] is only used if the UE has also application data or [RRC][rrc]
+  signaling.
+
   * What is the difference between DMRS and SRS?
+
+  Both are used for radio quality measurements. [DMRS][dmrs] is used to help demodulating
+  the signal transmitted by one UE, while [SRS][srs] is used to measure quality
+  on a larger bandwidth.
+
   * What is the advantage of frequency hopping on PDSCH and PUSCH?
+
+  Diversity gain.
+
   * On which transport channels are transmitted System Informations?
+
+  System Informations are the MIB and SIBs. The [MIB][mib] is transported by [BCH][pbch]
+  the [SIBs][sib] are all transported on the [DL-SCH][pdsch]. The first SIB contains the
+  scheduling of the other SIBs, and its own location is given by the [PDCCH][pdcch].
+
   * What type of information is carried by DCIs?
+
+  [DCIs][dci] (on the [PDCCH][pdcch]) carry the location of the first [SIB][sib] in
+  the [PDSCH][pdsch] and other resource allocation information.
+
   * Which DCI is used for resource allocation on the UL?
+
+  DCI0
+
   * On which physical channel are UCI transmitted?
+
+  PUCCH and PUSCH
+
   * On which logical channels are signaling message transmitted when the UE has no RRC connection? When it has a RRC connection?
+
+  with: DCCH. without: CCCH
 
 ## MAC/RLC sublayers
 
   * In which layers are located HARQ and ARQ functions?
+
+  HARQ is on the MAC layer, ARQ is on the RLC layer.
+
   * What are the RLC modes?
+
+  Acknowledged Mode, Transparent Mode, Unacknowledged Mode
+
   * Give one function of PDCP.
+
+  IP Header compression, security, handover function
 
 # Exercise 2
 
@@ -166,3 +230,22 @@ Indicate on figures 1 and 2 the physical, transport and logical channel used.
 [mimo]: https://en.wikipedia.org/wiki/MIMO
 [beamforming]: https://en.wikipedia.org/wiki/Beamforming
 [snr]: https://en.wikipedia.org/wiki/Signal-to-noise_ratio
+[rrc]: /404
+[dcch]: /404
+[dtch]: /404
+[ccch]: /404
+[pci]: /404
+[sss]: /404
+[pss]: /404
+[pbch]: /404
+[pdcch]: /404
+[pdsch]: /404
+[pcfich]: /404
+[prach]: /404
+[pusch]: /404
+[pucch]: /404
+[uci]: /404
+[dmrs]: /404
+[srs]: /404
+[mib]: /404
+[sib]: /404
