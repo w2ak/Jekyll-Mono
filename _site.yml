@@ -4,3 +4,8 @@ remote:
   dir: blog
   remote: origin
   branch: master
+
+gpg:
+  bin: '/usr/bin/gpg2'
+  key: '0x15247DF0CB359C59'
+  file: 'publickey/clement.durand.asc'

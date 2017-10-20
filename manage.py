@@ -30,6 +30,8 @@ def get_args():
     ap_serve.set_defaults(action=manage_serve)
     ap_tar = ap_.add_parser('tar',help='Build and archive the build folder.')
     ap_tar.set_defaults(action=manage_tar)
+    ap_gpg = ap_.add_parser('gpg',help='Update gpg key.')
+    ap_gpg.set_defaults(action=manage_gpg)
     return ap.parse_args()
 
 def manage_build(a,c):
@@ -60,6 +62,27 @@ def manage_tar(a,c):
     result.check_returncode()
     return
 
+def manage_gpg(a,c):
+    env = os.environ.copy()
+    try:
+        gpgbin = c.gpg.bin
+    except AttributeError:
+        gpgbin = 'gpg2'
+    gpgkey = c.gpg.key
+    gpgfile = c.gpg.file
+    mktemp = [ 'mktemp', '-d' ]
+    tempdir = subprocess.check_output(mktemp).decode('utf-8').strip()
+    chmod = [ 'chmod', '700', tempdir ]
+    subprocess.run(chmod).check_returncode()
+    clean = [ 'find', tempdir, '-mindepth', '1', '-delete' ]
+    subprocess.run(clean).check_returncode()
+    env["GNUPGHOME"] = tempdir
+    recv = [ gpgbin, '--recv-key', gpgkey ]
+    subprocess.run(recv, env=env).check_returncode()
+    export = [ gpgbin, '--armor', '-o', gpgfile, '--export', gpgkey ]
+    subprocess.run(export, env=env).check_returncode()
+    clean = [ 'rm', '-rf', tempdir ]
+    subprocess.run(clean).check_returncode()
 
 if __name__=='__main__':
     args = get_args()
