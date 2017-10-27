@@ -1,5 +1,7 @@
 ---
 layout: post
+toc: true
+title: Télécom ParisTech access
 author: Clément Durand
 ---
 
@@ -19,6 +21,14 @@ In my case, then I have the following:
 {% endhl %}
 
 # SSH Access
+
+## Out-of-the-box access
+
+You can use [this script][https://gist.github.com/w2ak/cf307845e554ac713723dbe125f58bdd] to access shells from Télécom ParisTech machines.
+
+The code is not perfect and could be improved, **dont hesitate to write comments on the github page if you have suggestions**.
+
+Please note that basic help is available by executing `./ssh.sh -h`.
 
 ## Shell access
 
@@ -153,3 +163,24 @@ you can easily access graphical interfaces of `room`.
  neze@yoga ~ $ ssh -X room
  c129-21% eclipse          # or chromium, for example
 {% endhl %}
+
+# Tunnelling
+
+![ieee](http://pix.toile-libre.org/upload/original/1509094362.png){:style="float:left;margin:0 10px 0 0"}
+
+A basic use-case of tunnels is getting access to scientific paper websites like IEEE.
+
+Assuming that you configured your ssh client, you should be able to open a socks proxy:
+
+{% hl text %}
+ neze@yoga ~ $ ssh -ND 8080 room
+
+{% endhl %}
+
+Do not close this terminal, then configure your web browser to use the SOCKS5 proxy
+`127.0.0.1:8080`. On firefox, this is found in the `Preferences` page, `Advanced`
+section, under the `Network` tab. There is a `Settings` button to setup *how Firefox
+connects to the Internet*, and it includes a proxy configuration.
+
+More information about SSH connections and tunnels can be found in
+[this article]({% link _posts/2017-01-25-ssh-connexions-and-tunnels.md %}) or on the web.
