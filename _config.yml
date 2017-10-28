@@ -56,3 +56,4 @@ include:
   - .htaccess
   - .htpasswd
   - .htgroups
+  - .well-known
