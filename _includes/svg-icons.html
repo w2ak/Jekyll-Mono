@@ -11,5 +11,9 @@
 {% if site.footer-links.stackoverflow %}<a href="http://stackoverflow.com/{{ site.footer-links.stackoverflow }}"><i class="fa fa-stackexchange fa-2x"></i></a>{% endif %}
 {% if site.footer-links.youtube %}<a href="https://youtube.com/{{ site.footer-links.youtube }}"><i class="fa fa-youtube-play fa-2x"></i></a>{% endif %}
 {% if site.footer-links.googleplus %}<a href="https://plus.google.com/{{ site.footer-links.googleplus }}"><i class="fa fa-google-plus-sign fa-2x"></i></a>{% endif %}
+{% if site.footer-links.gpgkey or site.footer-links.sshkey or site.footer-links.keybase %}
+<br/>
 {% if site.footer-links.gpgkey %}<a href="{{ site.baseurl }}/{{ site.footer-links.gpgkey }}"><i class="fa fa-lock fa-2x"></i></a>{% endif %}
 {% if site.footer-links.sshkey %}<a href="{{ site.baseurl }}/{{ site.footer-links.sshkey }}"><i class="fa fa-terminal fa-2x"></i></a>{% endif %}
+{% if site.footer-links.keybase %}<a href="https://keybase.io/{{ site.footer-links.keybase }}"><i class="fa fa-key fa-2x"></i></a>{% endif %}
+{% endif %}
