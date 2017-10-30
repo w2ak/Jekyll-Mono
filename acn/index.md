@@ -58,8 +58,10 @@ ACN906: *Cellular Access for High Data Rates*
   * [4G Diagram by Carol](/share/acn/906/lte-schema.pdf)
 * 4G Air Interface
   * 2017-09-25 [Lecture 03](/share/acn/906/03-lte-phy-mac-rlc.pdf)
-  * 2017-10-02 Lecture 03 (slides of Lecture 02)
+  * 2017-10-02 Lecture 04 (slides of Lecture 03)
   * [TD notes]({% link acn/lte-air-interface.md %})
+* 5G technologies
+  * 2017-10-30 [Lecture 05](/share/acn/906/05-5g-technos.pdf)
 
 ## ACN910 Protocols
 
