@@ -191,3 +191,15 @@ Check that you can still connect to your server and that the output of the
 command `iptables-save` does look like what you typed up there.
 
 ### Make these iptables permanent
+
+You are going to save these iptables, and use a script to automatically apply
+them whenever network interfaces are set up.
+
+```sh
+root@server ~ % mkdir firewall
+root@server ~ % cp $D/iptables firewall/iptables.rules
+root@server ~ % curl -Ls https://gist.github.com/w2ak/88cf0aad6cb58cfc0c5083c467eb4619 > firewall/restore.sh
+# It is advised to read and eventually edit restore.sh before making it executable
+root@server ~ % chmod 700 restore.sh
+root@server ~ % ln -s $(pwd)/firewall/restore.sh /etc/network/if-pre-up.d/iptables
+```
