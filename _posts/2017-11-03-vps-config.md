@@ -12,10 +12,9 @@ author: Clément Durand
 
 ---
 
-# Notations
-
-I will call my computer `laptop`, my server `server` at the address `example.com`
-with ip `93.184.216.34`. On both sides my username will be `neze`.
+I will call my computer **`laptop`**, my server **`server`** at the address
+**`example.com`** with ip **`93.184.216.34`**.
+On both sides my username will be **`neze`**.
 
 # Initial setup of access
 
@@ -41,6 +40,7 @@ neze@laptop ~ % cat << EOF >> ~/.ssh/config
 Host example.com
     HostName 93.184.216.34
     IdentityFile ~/.ssh/id_example.com
+EOF
 ```
 
   * Copy the identity file to `root@server`.
@@ -84,7 +84,7 @@ OK
 
 ```sh
 neze@laptop ~ % ssh -o PreferredAuthentications=password root@example.com
-root@93.184.216.34's password:
+root@93.184.216.34 password:
 Permission denied, please try again.
 ```
 
@@ -100,13 +100,15 @@ root@server ~ % adduser neze
 
 ```sh
 root@server ~ % usermod -aG sudo neze
+root@server ~ % groups neze
+neze: neze sudo
 ```
 
   * Copy your ssh public key to this user on the server.
 
 ```sh
 neze@laptop ~ % ssh-copy-id -i ~/.ssh/id_example.com.pub neze@example.com
-neze@93.184.216.34's password:
+neze@93.184.216.34 password:
 ```
 
   * Check that you have access to your user's shell.
