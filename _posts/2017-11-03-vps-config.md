@@ -155,3 +155,39 @@ neze@server ~ % sudo vi /etc/ssh/sshd_config
 ```sh
 neze@server ~ % sudo systemctl restart ssh.service
 ```
+
+## Setup a basic firewall
+
+### Block everything but SSH
+
+*Be careful with this section.*
+
+If you do a mistake during firewall setup, a server reboot will clean the
+filters.
+
+```sh
+root@server ~ % D=$(mktemp -d)
+root@server ~ % chown -R root:root $D && chmod -R 700 $D
+root@server ~ % find $D -mindepth 1 -delete
+root@server ~ % cat << EOF > $D/iptables
+*filter
+:INPUT DROP
+:FORWARD DROP
+:OUTPUT ACCEPT
+-A INPUT -i lo -j ACCEPT
+-A INPUT -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+-A INPUT -m state --state INVALID -j REJECT --reject-with icmp-host-unreachable
+-A INPUT -p icmp -j ACCEPT
+-A INPUT -p tcp -m state --state NEW -m tcp --dport 22 -j ACCEPT
+-A INPUT -m limit --limit 30/min -j LOG --log-prefix "iptables INPUT denied: " --log-level 7
+-A FORWARD -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+-A FORWARD -m limit --limit 30/min -j LOG --log-prefix "iptables FORWARD denied: " --log-level 7
+COMMIT
+EOF
+root@server ~ % iptables-apply $D/iptables
+```
+
+Check that you can still connect to your server and that the output of the
+command `iptables-save` does look like what you typed up there.
+
+### Make these iptables permanent

@@ -11,3 +11,4 @@ package.json
 *.pdf
 __pycache__
 *.asc
+*.bak
