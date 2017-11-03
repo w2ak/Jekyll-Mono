@@ -198,7 +198,7 @@ them whenever network interfaces are set up.
 ```sh
 root@server ~ % mkdir firewall
 root@server ~ % cp $D/iptables firewall/iptables.rules
-root@server ~ % curl -Ls https://gist.github.com/w2ak/88cf0aad6cb58cfc0c5083c467eb4619 > firewall/restore.sh
+root@server ~ % curl -Ls 'https://gist.githubusercontent.com/w2ak/88cf0aad6cb58cfc0c5083c467eb4619/raw/f02765485eff56b797dbe1429835b4d26ce6a339/restore.sh' > firewall/restore.sh
 # It is advised to read and eventually edit restore.sh before making it executable
 root@server ~ % chmod 700 restore.sh
 root@server ~ % ln -s $(pwd)/firewall/restore.sh /etc/network/if-pre-up.d/iptables
