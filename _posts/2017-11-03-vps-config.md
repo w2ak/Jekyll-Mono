@@ -162,10 +162,16 @@ neze@server ~ % sudo systemctl restart ssh.service
 
 *Be careful with this section.*
 
-If you do a mistake during firewall setup, a server reboot will clean the
-filters.
+**Good to know:** If you do a mistake during firewall setup, a server reboot
+will clean the filters and you will be able to restart the firewall part.
+
+A commented version of the iptables rules is available [here][fw-gist].
 
 ```sh
+# The three first lines:
+## Create a temporary directory in /tmp
+## Make sure you own the directory and nobody can write/read in it
+## Empty the directory
 root@server ~ % D=$(mktemp -d)
 root@server ~ % chown -R root:root $D && chmod -R 700 $D
 root@server ~ % find $D -mindepth 1 -delete
@@ -176,11 +182,10 @@ root@server ~ % cat << EOF > $D/iptables
 :OUTPUT ACCEPT
 -A INPUT -i lo -j ACCEPT
 -A INPUT -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
--A INPUT -m state --state INVALID -j REJECT --reject-with icmp-host-unreachable
+-A INPUT -m conntrack --ctstate INVALID -j REJECT --reject-with icmp-host-unreachable
 -A INPUT -p icmp -j ACCEPT
--A INPUT -p tcp -m state --state NEW -m tcp --dport 22 -j ACCEPT
+-A INPUT -p tcp -m conntrack --ctstate NEW -m tcp --dport 22 -j ACCEPT
 -A INPUT -m limit --limit 30/min -j LOG --log-prefix "iptables INPUT denied: " --log-level 7
--A FORWARD -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
 -A FORWARD -m limit --limit 30/min -j LOG --log-prefix "iptables FORWARD denied: " --log-level 7
 COMMIT
 EOF
@@ -190,6 +195,8 @@ root@server ~ % iptables-apply $D/iptables
 Check that you can still connect to your server and that the output of the
 command `iptables-save` does look like what you typed up there.
 
+Do not close this terminal <i class="fa fa-heart"></i>
+
 ### Make these iptables permanent
 
 You are going to save these iptables, and use a script to automatically apply
@@ -198,8 +205,27 @@ them whenever network interfaces are set up.
 ```sh
 root@server ~ % mkdir firewall
 root@server ~ % cp $D/iptables firewall/iptables.rules
-root@server ~ % curl -Ls 'https://gist.githubusercontent.com/w2ak/88cf0aad6cb58cfc0c5083c467eb4619/raw/f02765485eff56b797dbe1429835b4d26ce6a339/restore.sh' > firewall/restore.sh
+root@server ~ % curl -Ls 'https://gist.githubusercontent.com/w2ak/88cf0aad6cb58cfc0c5083c467eb4619/raw/2da598837dfa122e8b79b1326b4242b1d88b87af/restore.sh' > firewall/restore.sh
 # It is advised to read and eventually edit restore.sh before making it executable
-root@server ~ % chmod 700 restore.sh
+root@server ~ % chmod 700 firewall/restore.sh
 root@server ~ % ln -s $(pwd)/firewall/restore.sh /etc/network/if-pre-up.d/iptables
 ```
+
+The script will be downloaded with 'curl'. It is actually the `restore.sh` script
+from [this page][fw-gist], which you can also manually download and put on your
+server. If you do so, it will look like this.
+
+```sh
+# First download 'restore.sh' and know where it is in your laptop
+neze@laptop ~ % scp Downloads/restore.sh neze@example.com:.
+neze@laptop ~ % ssh neze@example.com
+...
+neze@server ~ % sudo -s
+root@server ~neze % cd && mkdir firewall
+root@server ~ % mv ~neze/restore.sh firewall/.
+root@server ~ % chown root:root firewall/restore.sh
+root@server ~ % chmod 700 firewall/restore.sh
+root@server ~ % ln -s $(pwd)/firewall/restore.sh /etc/network/if-pre-up.d/iptables
+```
+
+[fw-gist]: https://gist.github.com/w2ak/88cf0aad6cb58cfc0c5083c467eb4619
