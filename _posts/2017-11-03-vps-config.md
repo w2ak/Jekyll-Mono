@@ -228,4 +228,13 @@ root@server ~ % chmod 700 firewall/restore.sh
 root@server ~ % ln -s $(pwd)/firewall/restore.sh /etc/network/if-pre-up.d/iptables
 ```
 
+{% censor %}
+# Web server setup
+
+## Setup a basic static website
+
+## Add https support
+
+{% endcensor %}
+
 [fw-gist]: https://gist.github.com/w2ak/88cf0aad6cb58cfc0c5083c467eb4619
