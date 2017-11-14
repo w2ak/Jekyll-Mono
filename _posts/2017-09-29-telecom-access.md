@@ -24,7 +24,7 @@ In my case, then I have the following:
 
 ## Out-of-the-box access
 
-You can use [this script][https://gist.github.com/w2ak/cf307845e554ac713723dbe125f58bdd] to access shells from Télécom ParisTech machines.
+You can use [this script](https://gist.github.com/w2ak/cf307845e554ac713723dbe125f58bdd) to access shells from Télécom ParisTech machines.
 
 The code is not perfect and could be improved, **dont hesitate to write comments on the github page if you have suggestions**.
 
