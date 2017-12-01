@@ -129,6 +129,16 @@ ACN 913: *Propagation in Graphs*
   * [Clément](/share/acn/913/tp/03-Competitive-Epidemics-TP.html){:class="broken"}
   * [Correction](/404){:class="broken")
 
+## ACN905 Limits
+
+ACN 905: *Limits and Paradoxes of Information Theory*
+
+### Pages
+
+## ACN907 Clouds
+
+ACN 907: *From cloud computing to mobile edge computing*
+
 ## Resources
 
 Every resource from the master can be found in [acn@share.neze.fr](/share/acn/).
