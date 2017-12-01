@@ -228,13 +228,262 @@ root@server ~ % chmod 700 firewall/restore.sh
 root@server ~ % ln -s $(pwd)/firewall/restore.sh /etc/network/if-pre-up.d/iptables
 ```
 
-{% censor %}
 # Web server setup
+
+## Install a LAMP server
+
+Get the following software to have a basic LAMP server. If you only want simple
+static pages you can avoid downloading the `php` and `mysql` related software.
+
+```
+root@server ~ % apt-get install acl apache2 php mysql-server libapache2-mod-php php-mysql
+```
 
 ## Setup a basic static website
 
+### Create your tree
+
+**Careful**: try to respect the user that is executing the commands in the following
+example. At first you need to be root, but try to avoid being root when the example
+doesn't use it.
+
+Create the directory in which you will put your website, then set the correct
+permissions.
+
+```sh
+# Create the directories
+root@server ~ % mkdir -p /var/www/example.com/html /var/www/example.com/logs
+# Allow minimum access to /var/www
+root@server ~ % chmod 751 /var /var/www
+# Allow only root access to /var/www/example.com
+root@server ~ % chmod -R u=rwX,g=rX,o-rwx /var/www/example.com
+# Add sticky bit (protects ownership) to /var/www/example.com/html
+root@server ~ % chmod +s /var/www/example.com/html
+# Allow reading access for www-data (the web server user) to /var/www/example.com/html
+root@server ~ % setfacl -Rm d:u:www-data:r-X,u:www-data:r-X /var/www/example.com/html
+# Allow writing access for my user
+root@server ~ % setfacl -Rm d:u:neze:rwX,u:neze:rwX /var/www/example.com/html
+```
+
+Create **as your user** (not root) the first html page. *Do not create `index.html`
+yet, it will allow you to perform a basic check.*
+
+```sh
+neze@server ~ % vim /var/www/example.com/html/first.html
+```
+
+```diff
++<html>
++  <head>
++    <title>My first page</title>
++  </head>
++  <body>
++    <h1>Super beautiful title</h1>
++    <p>For a super beautiful website.</p>
++  </body>
++</html>
+```
+
+Check that the file you just created is owned by the `root` group.
+
+```sh
+neze@server ~ % ls -lah /var/www/example.com/html
+total 12K
+drwsrws---+ 2 root root 4,0K Dec  1 10:04 .
+drwxrwx---+ 4 root root 4,0K Dec  1 09:50 ..
+-rw-rw----+ 1 neze root    0 Dec  1 10:04 first.html
+```
+
+### Configure the web server to deliver the website
+
+Create a basic configuration file for this website.
+
+```sh
+root@server ~ % vim /etc/apache2/sites-available/example.com.conf
+```
+
+```diff
++<VirtualHost *:80>
++  ServerAdmin neze@example.com
++  ServerName example.com
++  DocumentRoot /var/www/example.com/html
++
++  ErrorLog /var/www/example.com/logs/error.log
++  CustomLog /var/www/example.com/logs/access.log combined
++
++  <Directory /var/www/example.com/html>
++    Options -Indexes -FollowSymLinks
++    DirectoryIndex index.html index.php
++    AllowOverride None
++    Order allow,deny
++    Allow from all
++    Require all granted
++  </Directory>
++</VirtualHost>
+```
+
+Disable every website enabled by apache, then enable your own.
+
+```sh
+root@server ~ % ls /etc/apache2/sites-enabled
+000-default
+root@server ~ % a2dissite 000-default
+root@server ~ % a2ensite example.com
+root@server ~ % systemctl restart apache2.service
+```
+
+Check that you have access to the website **from your server**.
+
+```sh
+# This should give "403 forbidden" you don't have permission.
+neze@server ~ % curl -Ls localhost
+# This should show you the web page you created.
+neze@server ~ % curl -Ls localhost/first.html
+```
+
+Open the `http` and `https` ports in the firewall.
+
+```sh
+root@server ~ % vim ~/firewall/iptables.rules
+```
+
+```diff
+ -A INPUT -p icmp -j ACCEPT
+ -A INPUT -p tcp -m conntrack --ctstate NEW -m tcp --dport 22 -j ACCEPT
++-A INPUT -p tcp -m conntrack --ctstate NEW -m tcp --dport 80 -j ACCEPT
++-A INPUT -p tcp -m conntrack --ctstate NEW -m tcp --dport 443 -j ACCEPT
+ -A INPUT -m limit --limit 30/min -j LOG --log-prefix "iptables INPUT denied: " --log-level 7
+ -A FORWARD -m limit --limit 30/min -j LOG --log-prefix "iptables FORWARD denied: " --log-level 7
+```
+
+```sh
+root@server ~ % iptables-apply ~/firewall/iptables.rules
+```
+
+Check in your web browser on your computer that you *do not* have access to
+`http://example.com/` and that you do have access to `http://example.com/first.html`.
+
 ## Add https support
 
-{% endcensor %}
+### Obtain ssl certificates
+
+Install certbot to use [letsencrypt](https://letsencrypt.org) certificates. They
+are free SSL certificates that will allow you to have secure https websites
+access without having to pay an expensive Certificate Authority.
+Then, enable apache ssl support.
+
+```sh
+root@server ~ % apt-get install certbot
+root@server ~ % a2enmod ssl
+```
+
+Ask Let's Encrypt for a certificate for your web server. The `certbot` utility
+will ask you for a valid e-mail (at least the first time).
+
+```sh
+root@server ~ % certbot --webroot --webroot-path /var/www/example.com/html -d example.com certonly
+```
+
+In the end, links to certificates should be available in the `letsencrypt` folder.
+It is important to use the `live` folder (see below) because this folder will
+always be valid, even when the certificates will be renewed (we'll talk about
+renewal down there).
+
+```sh
+root@server ~ % ls /etc/letsencrypt/live/example.com
+total 4
+lrwxrwxrwx 1 root root  31 Nov 23 12:37 cert.pem -> ../../archive/example.com/cert1.pem
+lrwxrwxrwx 1 root root  32 Nov 23 12:37 chain.pem -> ../../archive/example.com/chain1.pem
+lrwxrwxrwx 1 root root  36 Nov 23 12:37 fullchain.pem -> ../../archive/example.com/fullchain1.pem
+lrwxrwxrwx 1 root root  34 Nov 23 12:37 privkey.pem -> ../../archive/example.com/privkey1.pem
+-rw-r--r-- 1 root root 543 Sep 24 13:06 README
+```
+
+### Setup ssl in the website
+
+Modify the configuration of your website for it to be available only with https.
+
+```sh
+root@server ~ % vim /etc/apache2/sites-available/example.com.conf
+```
+
+```diff
+ <VirtualHost *:80>
++  ServerAdmin neze@example.com
++  ServerName example.com
++  Redirect permanent / https://example.com/
++</VirtualHost>
++<VirtualHost *:443>
++  SSLEngine on
++  SSLCertificateFile /etc/letsencrypt/live/example.com/cert.pem
++  SSLCertificateKeyFile /etc/letsencrypt/live/example.com/privkey.pem
++  SSLCertificateChainFile /etc/letsencrypt/live/example.com/chain.pem
++
+   ServerAdmin neze@example.com
+   ServerName example.com
+   DocumentRoot /var/www/example.com/html
+ 
+   ErrorLog /var/www/example.com/logs/error.log
+   CustomLog /var/www/example.com/logs/access.log combined
+ 
+   <Directory /var/www/example.com/html>
+     Options -Indexes -FollowSymLinks
+     DirectoryIndex index.html index.php
+     AllowOverride None
+     Order allow,deny
+     Allow from all
+     Require all granted
+   </Directory>
+ </VirtualHost>
+```
+
+Reload the `apache2` server.
+
+```sh
+root@server ~ % systemctl reload apache2.service
+```
+
+Check in your web browser (in this order) that you have access to
+`https://example.com/first.html` and that `http://example.com/firts.html` is
+redirected to the https version.
+
+### Setup automatic ssl certificates renewal
+
+The SSL certificates you obtained are valid for 60 days. This is the default
+and mandatory value with Let's Encrypt certificates. You need to setup automatic
+renewal for these certificates.
+
+First, try manual certificate to understand what it does.
+
+```sh
+root@server ~ % which certbot
+/usr/bin/certbot
+root@server ~ % /usr/bin/certbot renew
+Saving debug log to /var/log/letsencrypt/letsencrypt.log
+
+-------------------------------------------------------------------------------
+Processing /etc/letsencrypt/renewal/example.com.conf
+-------------------------------------------------------------------------------
+Cert not yet due for renewal
+
+The following certs are not due for renewal yet:
+  /etc/letsencrypt/live/example.com/fullchain.pem (skipped)
+No renewals were attempted.
+```
+
+You can see that renewal will only be performed when needed. You can then simply
+setup a regular execution of this command (once every week for example).
+
+Choose randomly a minute (here, **33**), an hour (here, **4**) and a day of the
+week (here, **1**). Then, setup automatic renewal of your certificates.
+
+```sh
+root@server ~ % crontab -e
+```
+
+```diff
+ # m h  dom mon dow   command
++33 4 * * 1 /usr/bin/certbot renew
+```
 
 [fw-gist]: https://gist.github.com/w2ak/88cf0aad6cb58cfc0c5083c467eb4619
