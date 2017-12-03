@@ -846,7 +846,7 @@ root@server vpn % vim client.ovpn
 +</key>
 ```
 
-### Enable your OpenVPN instance
+### {% wip %} Enable your OpenVPN instance
 
 There are two independant steps in this process: setup and start the openvpn
 service, and open the necessary parts of the firewall.
@@ -896,21 +896,21 @@ root@server ~ % vim ~/firewall/iptables.rules
 root@server ~ % iptables-apply ~/firewall/iptables.rules
 ```
 
-### Additional firewall configuration
+### {% wip %} Additional firewall configuration
 
-## OpenVPN client
+## {% wip %} OpenVPN client
 
-### MacOS
+### {% wip %} MacOS
 
-### Linux
+### {% wip %} Linux
 
-#### With NetworkManager
+#### {% wip %} With NetworkManager
 
-#### Without NetworkManager
+#### {% wip %} Without NetworkManager
 
-### iOS
+### {% wip %} iOS
 
-### Android
+### {% wip %} Android
 
 [fw-gist]: https://gist.github.com/w2ak/88cf0aad6cb58cfc0c5083c467eb4619
 [privipv4]: /404
