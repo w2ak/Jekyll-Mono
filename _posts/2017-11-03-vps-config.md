@@ -5,6 +5,7 @@ category:
  - computer-science
  - notes
 toc: true
+toc-style: "float: unset; width: unset; margin: unset"
 author: Clément Durand
 ---
 

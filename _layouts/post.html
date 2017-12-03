@@ -7,7 +7,7 @@ layout: blog
  </div>
 
   {% if page.toc %}
-  <div class="toc">
+  <div class="toc" style="{{ page.toc-style }}">
     {{ content | toc_only }}
   </div>
   {% endif %}
