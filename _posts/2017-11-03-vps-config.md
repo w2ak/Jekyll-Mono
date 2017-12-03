@@ -453,7 +453,7 @@ The SSL certificates you obtained are valid for 60 days. This is the default
 and mandatory value with Let's Encrypt certificates. You need to setup automatic
 renewal for these certificates.
 
-First, try manual certificate to understand what it does.
+First, try manual certificate renewal to understand what it does.
 
 ```sh
 root@server ~ % which certbot
@@ -486,4 +486,433 @@ root@server ~ % crontab -e
 +33 4 * * 1 /usr/bin/certbot renew
 ```
 
+# VPN setup
+
+**WARNING**: This section is a work in progress.
+
+Setup a VPN server with OpenVPN
+
+## The concept
+
+A Virtual Private Network is made to group devices (your server, a phone,
+a laptop) as if they were in the same network. In this context, your server
+will act as the VPN server, i.e., as the gateway or the main router of the
+network. When connected to the VPN, the devices should be able to access the
+other devices or the network including the server, and might if you enable it
+access the Internet through (acting as) your server.
+
+This possibility to act as your server and access other devices makes security
+very important for the access to the VPN. For this purpose, authentication will
+be realized by using a system of SSL certificates and asymetric ciphering.
+
+More precisely, you will create a certificate authority that I will call **ca**
+and should be located on a safe machine if you want to be serious. The certificate
+authority will issue certificates for every actor of the VPN, including the
+server. In order to access the server, a client will need to own a valid
+certificate and its corresponding private key.
+
+Here, the ciphering algorithms will use 2kiB RSA keys. Elliptic curves are not
+used because the current version of the OpenVPN client for iOS does not implement
+ECDSA support.
+
+## Prepare mentally
+
+You need to prepare a few things in order to make sure that the architecture is
+clear in your head. This will avoid mistakes and help you go through the setup
+without too much unnecessary pain.
+
+### Network architecture
+
+You will configure a server, still called **server** because it is the same
+physical machine as your vps, and a client. Here it will be **laptop**.
+
+The openvpn server is located on your online machine (*example.com*) and will
+listen on a specific port (here, **993**) in udp or tcp (here, **tcp**).
+
+The private network will have a [private address space][privipv4]{:class="broken"}. In this
+tutorial we will use **10.0.0.0/24**, i.e., addresses from 10.0.0.0 to
+10.0.0.255. The [network mask][mask]{:class="broken"} will then be **255.255.255.0**. Do not
+hesitate to visit the links if there is something you do not understand.
+
+**Actors naming**: I usually name the actors with subdomains of the server's
+domain. It allowed me for example to easily add them to my internal DNS zone.
+Here, the server will then be **vpn.example.com**, and the client will be
+named **laptop.example.com**.
+
+### Certificates and keys management
+
+We will use [easy-rsa][easyrsadl] to manage keys and certificates. One easy-rsa
+instance is used as follows (details will be given later, do not try now):
+* You download and extract the archive available under the easy-rsa link
+* You extract it in a folder that will be the easy-rsa instance
+* You apply [this patch][easyrsapatch] to fix a minor bug
+* In this folder there is an executable `easyrsa` that allows to perform almost
+every operation.
+* There will be a `pki` folder containing important files
+  * ciphering parameters
+  * private keys
+  * certificates
+  * certificate requests
+
+A good practice is to compartimentalize, i.e., have a seperate easy-rsa instance
+for every actor in the vpn:
+* One instance for the certificate authority on the machine **ca** (possibly your
+laptop, preferably not your server)
+* One instance for the server on the machine **server**
+* One instance for the client on the machine **laptop**
+
+You can still, if you want, have only one instance for every actor. This means
+that the **ca** instance will generate everything, including the keys of everybody.
+The tutorial assumes you are using separate instances.
+
+## Create and manage certificates
+
+### Prepare a blank instance
+
+You need to fix a minor bug in easy-rsa and do a little personalization. In this
+section, you will create your own easy-rsa archive and use it to create every
+instance.
+
+* Download the [easy-rsa archive][easyrsadl]
+* Download the [easy-rsa patch][easyrsapatch]
+* Apply the bug-fixing patch to your easy-rsa folder as follows
+
+```sh
+neze@laptop ~ % ls ~/Downloads && cd ~/Downloads
+EasyRSA-3.0.3.tgz  easyrsa-bash-bug.patch
+neze@laptop Downloads % tar xzf EasyRSA-3.0.3.tgz
+neze@laptop Downloads % cd EasyRSA-3.0.3
+neze@laptop EasyRSA-3.0.3 % git apply ../easyrsa-bash-bug.patch
+```
+
+* Create your own settings file
+
+```sh
+neze@laptop EasyRSA-3.0.3 % cp vars.example vars
+neze@laptop EasyRSA-3.0.3 % vim vars
+```
+
+```diff
+-#set_var EASYRSA_REQ_COUNTRY   "US"
+-#set_var EASYRSA_REQ_PROVINCE  "California"
+-#set_var EASYRSA_REQ_CITY      "San Francisco"
+-#set_var EASYRSA_REQ_ORG       "Copyleft Certificate Co"
+-#set_var EASYRSA_REQ_EMAIL     "me@example.net"
+-#set_var EASYRSA_REQ_OU        "My Organizational Unit"
++set_var EASYRSA_REQ_COUNTRY   "FR"
++set_var EASYRSA_REQ_PROVINCE  ""
++set_var EASYRSA_REQ_CITY      "Paris"
++set_var EASYRSA_REQ_ORG       "MyCAOrg"
++set_var EASYRSA_REQ_EMAIL     "whatever@example.com"
++set_var EASYRSA_REQ_OU        "MyVPNOrg"
+```
+
+* Pack your own archive. You will use it for every easy-rsa instance
+
+```sh
+neze@laptop Downloads % ls
+EasyRSA-3.0.3.tgz EasyRSA-3.0.3  easyrsa-bash-bug.patch
+neze@laptop Downloads % mv EasyRSA-3.0.3 custom-easyrsa
+neze@laptop Downloads % tar czf custom-easyrsa.tgz custom-easyrsa
+```
+
+### Initialize the CA instance
+
+Download and extract your custom easy-rsa wherever you want
+(preferably in a safe place) on the **ca** machine.
+
+Initialize a `pki` then a certificate authority. The certificate authority will
+own everything that is shared between the actors of the VPN. The passphrase
+should be considered important.
+
+```sh
+neze@ca easy-rsa % ./easyrsa init-pki
+neze@ca easy-rsa % ./easyrsa build-ca
+# ...
+Enter PEM pass phrase: *********************************************
+Verifying - Enter PEM pass phrase: *********************************************
+Common Name (eg: your user, host, or server name) [Easy-RSA CA]:example.com
+# ...
+neze@ca easy-rsa % openvpn --genkey --secret pki/private/tls.key
+```
+
+### Initialize the server instance
+
+Download and extract your custom easy-rsa. Then, initialize a `pki` and create
+a request for your server.
+
+A useful practice is to avoid putting a password to the server key, in order to be
+able to automatically start the VPN server.
+
+```sh
+root@server easy-rsa % ./easyrsa init-pki
+root@server easy-rsa % ./easyrsa gen-req vpn.example.com nopass
+# ...
+Common Name (eg: your user, host, or server name) [vpn.example.com]:
+# ...
+root@server easy-rsa % ./easyrsa gen-dh
+# This process can be long and allows VPN connections to be faster
+```
+
+This process put a **private** key in `pki/private/vpn.example.com.key`, and
+a certificate request in `pki/reqs/vpn.example.com.req`. You also created
+**secret** Diffie-Hellman parameters in `pki/dh.pem`.
+
+### Initialize the client instance
+
+This time you can (and maybe should) put a password. If you are creating an iOS
+client, though, I was not able to use password-protected keys yet.
+
+```sh
+neze@laptop easy-rsa % ./easyrsa init-pki
+neze@laptop easy-rsa % ./easyrsa gen-req laptop.example.com # nopass
+```
+
+### Issue certificates for the client and the server
+
+With the CA instance, you now need to sign the requests from the server and the
+client. Make the two requests files you generated available to the **ca**
+machine.
+
+**You do not need to send anything else to the CA machine.** Only send the `.req`
+files (for example by e-mail) using any non necessarily secure channel.
+
+Then, simply sign the requests with the CA instance.
+
+```sh
+neze@ca ~ % ls /path/to/requests
+laptop.example.com.req  vpn.example.com.req
+
+neze@ca easy-rsa % ./easyrsa import-req /path/to/requests/vpn.example.com vpn.example.com
+neze@ca easy-rsa % ./easyrsa import-req /path/to/requests/laptop.example.com laptop.example.com
+
+neze@ca easy-rsa % ./easyrsa sign-req server vpn.example.com
+# ...
+  Confirm request details: yes
+# ...
+Enter pass phrase for pki/private/ca.key: *********************************************
+# ...
+neze@ca easy-rsa % ./easyrsa sign-req client laptop.example.com
+```
+
+This generated two `.crt` files in the `pki/issued` folder. Send the following
+files to each actor:
+* The `pki/ca.crt` file is the certificate of the authority.
+* The `pki/private/tls.key` file is the pre-shared key file for additional security.
+* The `issued/__name__.example.com.crt` is the certificate file for the
+corresponding actor.
+
+It is better to use a secure channel this time because the `tls.key` file is
+supposed to remain at least a minimum private. # TODO: give a way to make it
+private
+
+## OpenVPN server
+
+In the server we will create a `vpn` folder (here it will be `/root/vpn`) that
+will eventually contain every necessary file for the OpenVPN server to run.
+
+```sh
+root@server ~ % mkdir /root/vpn && cd /root/vpn
+root@server vpn % cp /path/to/ca.crt /path/to/tls.key /path/to/vpn.example.com.crt /path/to/vpn.example.com.key /path/to/dh.pem .
+root@server vpn % chmod 400 tls.key vpn.example.com.key dh.pem
+root@server vpn % chmod 444 ca.crt vpn.example.com.crt
+```
+
+Once you are sure that you got the `.key` file and `dh.pem` file, you can delete
+the easy-rsa server instance if you want and if it is only the server's instance.
+
+### Server config file
+
+We will create a basic configuration. You should use absolute paths in this
+configuration because it could be used from any working directory. Remember
+that the default values mentioned before and used in the configuration file
+should be changed depending on what you chose.
+
+```sh
+root@server vpn % touch server.conf && chmod 644 server.conf
+root@server vpn % vim server.conf
+```
+
+```diff
++port                    993
++proto                   tcp
++dev                     tun
++topology                subnet
++server                  10.0.0.0 255.255.255.0
++ifconfig-pool-persist   /root/vpn/ipp.txt
++push                    "route 10.0.0.0 255.255.255.0"
++client-to-client
++keepalive               10 120
++cipher                  AES-256-CBC
++max-clients             5
++user                    nobody
++group                   nogroup
++persist-key
++persist-tun
++log                     /root/vpn/server.log
++verb                    3
++
++dh                      /root/vpn/dh.pem
++
++tls-auth                /root/vpn/tls.key 0
++ca                      /root/vpn/ca.crt
++cert                    /root/vpn/vpn.example.com.crt
++key                     /root/vpn/vpn.example.com.key
+```
+
+If you intend to use udp, you should slightly change the setup as follows
+
+```diff
+ port                    993
+-proto                   tcp
++proto                   udp
++explicit-exit-notify
+ dev                     tun
+```
+
+You can quickly test that there is nothing wrong with this configuration by
+commenting out the logfile instruction and running openvpn.
+
+```sh
+root@server vpn % openvpn --config server.conf
+```
+
+### Client config files
+
+Then, you need to write sample configurations for the clients because their
+configuration needs to match the server's.
+
+```sh
+root@server vpn % touch client.conf && chmod 644 client.conf
+root@server vpn % vim client.conf
+```
+
+```diff
++client
++proto           tcp
++remote          example.com 993
++dev tun
++resolv-retry    infinite
++nobind
++persist-key
++persist-tun
++remote-cert-tls server
++cipher          AES-256-CBC
++ping            10
++ping-restart    30
++
++tls-auth        tls.key 1
++ca              ca.crt
++cert            client.crt
++key             client.key
+```
+
+You should also create a sample self-contained configuration. Its use will be
+explained in the client part.
+
+```sh
+root@server vpn % cp client.conf client.ovpn
+root@server vpn % vim client.ovpn
+```
+
+```diff
+ ping-restart    30
+ 
+-tls-auth        tls.key 1
++key-direction   1
++<tls-auth>
++-----BEGIN OpenVPN Static key V1-----
++...
++-----END OpenVPN Static key V1-----
++</tls-auth>
+-ca              ca.crt
++<ca>
++-----BEGIN CERTIFICATE-----
++...
++-----END CERTIFICATE-----
++</ca>
+-cert            client.crt
++<cert>
++-----BEGIN CERTIFICATE-----
++...
++-----END CERTIFICATE-----
++</cert>
+-key             client.key
++<key>
++-----BEGIN PRIVATE KEY-----
++...
++-----END PRIVATE KEY-----
++</key>
+```
+
+### Enable your OpenVPN instance
+
+There are two independant steps in this process: setup and start the openvpn
+service, and open the necessary parts of the firewall.
+
+We will start with the openvpn service. Create a link to your configuration in
+the openvpn folder.
+
+```sh
+root@server ~ % ln -s /root/vpn/server.conf /etc/openvpn/vpn.example.com.conf
+```
+
+Modify the openvpn configuration to automatically start your vpn server.
+
+```sh
+root@server ~ % vim /etc/default/openvpn
+```
+
+```diff
+-#AUTOSTART="all"
++AUTOSTART="all"
+```
+
+```sh
+root@server ~ % systemctl daemon-reload
+```
+
+Enable and start the openvpn service, then check that your OpenVPN server is
+running.
+
+```sh
+root@server ~ % systemctl enable openvpn.service
+root@server ~ % systemctl start openvpn@vpn.example.com.service
+root@server ~ % ps aux | grep openvpn
+```
+
+You also need to configure the firewall. You should open the correct port to
+enable clients to access your OpenVPN server.
+
+```sh
+root@server ~ % vim ~/firewall/iptables.rules
+```
+
+```diff
+```
+
+```sh
+root@server ~ % iptables-apply ~/firewall/iptables.rules
+```
+
+### Additional firewall configuration
+
+## OpenVPN client
+
+### MacOS
+
+### Linux
+
+#### With NetworkManager
+
+#### Without NetworkManager
+
+### iOS
+
+### Android
+
 [fw-gist]: https://gist.github.com/w2ak/88cf0aad6cb58cfc0c5083c467eb4619
+[privipv4]: /404
+[mask]: /404
+[easyrsadl]: https://github.com/OpenVPN/easy-rsa/releases/latest
+[easyrsapatch]: https://gist.githubusercontent.com/w2ak/54ae736732258400f42845d6f67f1b3a/raw/c9bb2026c597961fc610020db39d557752b7d32e/easyrsa-bash-bug.patch
