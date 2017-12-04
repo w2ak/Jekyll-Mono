@@ -37,6 +37,11 @@
       </div>
     </div>
     
+  {% if page.toc and page.toc == "large" %}
+  <div class="largetoc" style="{{ page.toc-style }}">
+    {{ content | toc_only }}
+  </div>
+  {% endif %}
 
     <div id="main" role="main" class="container">
       {{ content }}

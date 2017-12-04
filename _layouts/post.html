@@ -6,7 +6,7 @@ layout: blog
  <div class="space-extra-small">
  </div>
 
-  {% if page.toc %}
+  {% if page.toc and page.toc != "large" %}
   <div class="toc" style="{{ page.toc-style }}">
     {{ content | toc_only }}
   </div>

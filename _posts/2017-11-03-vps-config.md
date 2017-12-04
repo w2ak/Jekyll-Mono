@@ -4,8 +4,7 @@ title: VPS First Configuration
 category:
  - computer-science
  - notes
-toc: true
-toc-style: "float: unset; width: unset; margin: unset"
+toc: large
 author: Clément Durand
 ---
 
