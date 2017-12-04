@@ -530,9 +530,9 @@ physical machine as your vps, and a client. Here it will be **laptop**.
 The openvpn server is located on your online machine (*example.com*) and will
 listen on a specific port (here, **993**) in udp or tcp (here, **tcp**).
 
-The private network will have a [private address space][privipv4]{:class="broken"}. In this
+The private network will have a [private address space][privipv4]. In this
 tutorial we will use **10.0.0.0/24**, i.e., addresses from 10.0.0.0 to
-10.0.0.255. The [network mask][mask]{:class="broken"} will then be **255.255.255.0**. Do not
+10.0.0.255. The [network mask][mask] will then be **255.255.255.0**. Do not
 hesitate to visit the links if there is something you do not understand.
 
 **Actors naming**: I usually name the actors with subdomains of the server's
@@ -543,7 +543,7 @@ named **laptop.example.com**.
 ### Certificates and keys management
 
 We will use [easy-rsa][easyrsadl] to manage keys and certificates. One easy-rsa
-instance is used as follows (details will be given later, do not try now):
+instance is used as follows (details will be given later, no need to try now):
 * You download and extract the archive available under the easy-rsa link
 * You extract it in a folder that will be the easy-rsa instance
 * You apply [this patch][easyrsapatch] to fix a minor bug
@@ -601,7 +601,7 @@ neze@laptop EasyRSA-3.0.3 % vim vars
 -#set_var EASYRSA_REQ_EMAIL     "me@example.net"
 -#set_var EASYRSA_REQ_OU        "My Organizational Unit"
 +set_var EASYRSA_REQ_COUNTRY   "FR"
-+set_var EASYRSA_REQ_PROVINCE  ""
++set_var EASYRSA_REQ_PROVINCE  "."
 +set_var EASYRSA_REQ_CITY      "Paris"
 +set_var EASYRSA_REQ_ORG       "MyCAOrg"
 +set_var EASYRSA_REQ_EMAIL     "whatever@example.com"
@@ -846,7 +846,7 @@ root@server vpn % vim client.ovpn
 +</key>
 ```
 
-### {% wip %} Enable your OpenVPN instance
+### Enable your OpenVPN instance
 
 There are two independant steps in this process: setup and start the openvpn
 service, and open the necessary parts of the firewall.
@@ -890,13 +890,92 @@ root@server ~ % vim ~/firewall/iptables.rules
 ```
 
 ```diff
+ -A INPUT -p tcp -m conntrack --ctstate NEW -m tcp --dport 22 -j ACCEPT
++-A INPUT -p tcp -m conntrack --ctstate NEW -m tcp --dport 993 -j ACCEPT
+ -A INPUT -m limit --limit 30/min -j LOG --log-prefix "iptables INPUT denied: " --log-level 7
++-A FORWARD -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+ -A FORWARD -m limit --limit 30/min -j LOG --log-prefix "iptables FORWARD denied: " --log-level 7
+ COMMIT
 ```
 
 ```sh
 root@server ~ % iptables-apply ~/firewall/iptables.rules
 ```
 
-### {% wip %} Additional firewall configuration
+Then, enable forwarding and set it persistent.
+
+```sh
+root@server ~ % sysctl -w net.ipv4.conf.all.forwarding=1
+root@server ~ % vim ~/firewall/restore.sh
+```
+
+```diff
+ # enabling forwarding is necessary if you have a VPN
+-# sysctl -w net.ipv4.conf.all.forwarding=1 >/dev/null 2>/dev/null
++sysctl -w net.ipv4.conf.all.forwarding=1 >/dev/null 2>/dev/null
+ # do not forget ipv6 firewall if your server is ipv6 enabled
+```
+
+### Additional firewall configuration
+
+The firewall configuration you did only enabled connections between your VPN
+clients and your server. Right now, a VPN client can connect to the VPN server
+and has the same rights as any other machine trying to access your server.
+
+Identify the `tun` interface your openvpn server is working on. Here, it will
+be **tun0**. Identify the interface connected to Internet. Here, it will be
+**eth0**.
+
+```sh
+root@server ~ % ip link
+```
+
+#### Internet access
+
+Enable VPN clients to access Internet through (as) your VPN server.
+
+```sh
+root@server ~ % vim ~/firewall/iptables.rules
+```
+
+```diff
+ -A FORWARD -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
++-A FORWARD -i tun0 -s 10.0.0.0/24 -o eth0 -j ACCEPT
+ -A FORWARD -m limit --limit 30/min -j LOG --log-prefix "iptables FORWARD denied: " --log-level 7
+ COMMIT
++*nat
++:PREROUTING ACCEPT
++:INPUT ACCEPT
++:OUTPUT ACCEPT
++:POSTROUTING ACCEPT
++-A POSTROUTING -s 10.0.0.0/24 -o eth0 -j SNAT --to-source 93.184.216.34
++COMMIT
+```
+
+```sh
+root@server ~ % iptables-apply ~/firewall/iptables.rules
+```
+
+#### Client-to-client access
+
+Enable VPN clients to access each other.
+
+```sh
+root@server ~ % vim ~/firewall/iptables.rules
+```
+
+```diff
+ -A FORWARD -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+ -A FORWARD -i tun0 -s 10.0.0.0/24 -o eth0 -j ACCEPT
++-A FORWARD -i tun0 -s 10.0.0.0/24 -o tun0 -d 10.0.0.0/24 -j ACCEPT
+ -A FORWARD -m limit --limit 30/min -j LOG --log-prefix "iptables FORWARD denied: " --log-level 7
+ COMMIT
+ *nat
+```
+
+```sh
+root@server ~ % iptables-apply ~/firewall/iptables.rules
+```
 
 ## {% wip %} OpenVPN client
 
@@ -913,7 +992,7 @@ root@server ~ % iptables-apply ~/firewall/iptables.rules
 ### {% wip %} Android
 
 [fw-gist]: https://gist.github.com/w2ak/88cf0aad6cb58cfc0c5083c467eb4619
-[privipv4]: /404
-[mask]: /404
+[privipv4]: https://en.wikipedia.org/wiki/Private_network#Private_IPv4_address_spaces
+[mask]: https://en.wikipedia.org/wiki/Subnetwork
 [easyrsadl]: https://github.com/OpenVPN/easy-rsa/releases/latest
 [easyrsapatch]: https://gist.githubusercontent.com/w2ak/54ae736732258400f42845d6f67f1b3a/raw/c9bb2026c597961fc610020db39d557752b7d32e/easyrsa-bash-bug.patch
