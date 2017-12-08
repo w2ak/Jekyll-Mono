@@ -585,6 +585,11 @@ neze@laptop Downloads % cd EasyRSA-3.0.3
 neze@laptop EasyRSA-3.0.3 % git apply ../easyrsa-bash-bug.patch
 ```
 
+<span class="lettrine"><i class="fa fa-exclamation-triangle"></i></span>
+If you have an error while applying the patch, it means that you probably
+copy-pasted the patch instead of saving it. Open the link in your browser then
+`File>Save` it as `easyrsa-bash-bug.patch` for example.
+
 * Create your own settings file
 
 ```sh
@@ -633,7 +638,7 @@ Enter PEM pass phrase: *********************************************
 Verifying - Enter PEM pass phrase: *********************************************
 Common Name (eg: your user, host, or server name) [Easy-RSA CA]:example.com
 # ...
-neze@ca easy-rsa % openvpn --genkey --secret pki/private/tls.key
+neze@ca easy-rsa % ssh server "openvpn --genkey --secret /dev/fd/1" > pki/private/tls.key
 ```
 
 ### Initialize the server instance
@@ -699,12 +704,36 @@ This generated two `.crt` files in the `pki/issued` folder. Send the following
 files to each actor:
 * The `pki/ca.crt` file is the certificate of the authority.
 * The `pki/private/tls.key` file is the pre-shared key file for additional security.
-* The `issued/__name__.example.com.crt` is the certificate file for the
+* The `pki/issued/__name__.example.com.crt` is the certificate file for the
 corresponding actor.
 
 It is better to use a secure channel this time because the `tls.key` file is
-supposed to remain at least a minimum private. # TODO: give a way to make it
-private
+supposed to remain at least a minimum private.
+
+Down there is an example to make it private. The client will need `openssl` to
+decipher it.
+
+* On the CA: prepare a secure archive to send to (for example) **vpn**.
+
+```sh
+neze@ca easy-rsa % mkdir -p build && chmod 700 build
+neze@ca easy-rss % cp pki/ca.crt pki/private/tls.key pki/issued/vpn.example.com.crt pki/reqs/vpn.example.com.req build/.
+neze@ca easy-rsa % cd build
+neze@ca build % openssl req -in vpn.example.com.req -noout -pubkey -out vpn.example.com.pub
+neze@ca build % openssl rand 192 -out vpn.example.com.tgz.key
+neze@ca build % tar cf - ca.crt tls.key vpn.example.com.crt | openssl aes-256-cbc -pass file:vpn.example.com.tgz.key -out vpn.example.com.tgz.enc
+neze@ca build % openssl rsautil -encrypt -pubin -inkey vpn.example.com.pub -in vpn.example.com.key -out vpn.example.com.tgz.key.enc
+```
+
+* Send the `*.enc` files (two files) to the client.
+* On the client: decrypt the data and get the files
+
+```sh
+neze@server tmp-folder % openssl rsautl -decrypt -ssl -inkey /path/to/easyrsa/pki/private/vpn.example.com.key -in vpn.example.com.tgz.key.enc -out vpn.example.com.tgz.key
+neze@server tmp-folder % openssl aes-256-cbc -d -pass file:vpn.example.com.tgz.key -in vpn.example.com.tgz.enc | tar xf -
+```
+
+* Now you have access to `tls.key`, `ca.crt`, `vpn.example.com.crt`.
 
 ## OpenVPN server
 
@@ -890,6 +919,8 @@ root@server ~ % vim ~/firewall/iptables.rules
 
 ```diff
  -A INPUT -p tcp -m conntrack --ctstate NEW -m tcp --dport 22 -j ACCEPT
+ -A INPUT -p tcp -m conntrack --ctstate NEW -m tcp --dport 80 -j ACCEPT
+ -A INPUT -p tcp -m conntrack --ctstate NEW -m tcp --dport 443 -j ACCEPT
 +-A INPUT -p tcp -m conntrack --ctstate NEW -m tcp --dport 993 -j ACCEPT
  -A INPUT -m limit --limit 30/min -j LOG --log-prefix "iptables INPUT denied: " --log-level 7
 +-A FORWARD -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
@@ -976,19 +1007,173 @@ root@server ~ % vim ~/firewall/iptables.rules
 root@server ~ % iptables-apply ~/firewall/iptables.rules
 ```
 
-## {% wip %} OpenVPN client
+## OpenVPN client
 
-### {% wip %} MacOS
+Depending on your OS, you will use different softwares. On some software, it is
+easier to use standalone config files (here they are `*.ovpn` files to make it
+simpler).
 
-### {% wip %} Linux
+* MacOS: install Tunnelblick
+* Linux: you can use openvpn with NetworkManager
+* iOS and Android: OpenVPN Connect
 
-#### {% wip %} With NetworkManager
+This part gives simple explanations about the whole process because with so much
+information above, it is difficult to have a clear idea of what you need to do.
 
-#### {% wip %} Without NetworkManager
+### What you need
 
-### {% wip %} iOS
+* A laptop with openssl installed and a working folder that I will call `build`.
+* A client (possibly the same laptop, unless your client is a phone).
+* An already configured server.
 
-### {% wip %} Android
+### Steps to add this client
+
+* Provide the client laptop with your custom easy-rsa (this way the configuration is
+the same).
+* On the client laptop
+  * [Create the request](#initialize-the-client-instance)
+  * Send the request to the CA
+  * Put the private key from `pki/private/_client_.key` to your `build` folder
+  * You can delete the client easy-rsa instance
+* On the CA
+  * [Sign the client request](#issue-certificates-for-the-client-and-the-server)
+  * Maybe encrypt the files before sending them. P.S. If you are using ssh for
+  file transfers, no need to add the encryption layer
+  * Send the files to the client laptop
+* On the server
+  * Send the two client config files to the client laptop
+* On the client laptop
+  * Maybe decrypt the files from the CA
+  * Put every file in the `build` folder. You should have:
+    * `client.conf` and `client.ovpn`
+    * `ca.crt` and `tls.key`
+    * `_client_.key` and `_client_.crt`
+  * Use the config file of your choice (depending on whether you want a standalone
+  config file or not) and modify it by taking data in the other files. Here are
+  examples. The Base64 data was directly taken in the files.
+  * Then you can just send the `client.ovpn` file, or an archive containing the
+  `client.conf` file with the four keys and certificates files, to the client.
+* On the client
+  * Enjoy!
+
+```diff
+@ client.conf
+
+-tls-auth        tls.key 1
+-ca              ca.crt
+-cert            client.crt
+-key             client.key
++tls-auth        /path/to/tls.key 1
++ca              /path/to/ca.crt
++cert            /path/to/_client_.crt
++key             /path/to/_client_.key
+```
+
+```diff
+@ client.ovpn
+
+ ping-restart    30
+ 
+ key-direction   1
+ <tls-auth>
+ -----BEGIN OpenVPN Static key V1-----
+-...
++606aafbb7474cb29b5adb3436d7e5446
++4e33e66a57821dde9eb6843b1176d7dc
++75fcb94bd98dcd4234528ac2e318c504
++b51afc163b146b42b320bb9bce39f27c
++4bb1bd802e154aa58288256c6ac60a67
++1f3e0                      02b56
++8e75a                      994c8
++2c03a    Taken from the    1b29a
++ef79c    `tls.key' file    13226
++43a95                      b14fd
++aa25f                      be3ea
++82db6043752aef6a3de678ee3e128aa5
++b46838f307a13b0d1c7f729d34ba3197
++815a5670b434abde50c6958641480649
++8ff8de6929aa4ae021b8f7637957cf5d
++f4941e62b8502647aa00f050ea83f26c
+ -----END OpenVPN Static key V1-----
+ </tls-auth>
+ <ca>
+ -----BEGIN CERTIFICATE-----
+-...
++MIIDNTCCAh2gAwIBAgIJAJs+aLUfaW2iMA0GCSqGSIb3DQEBCwUAMBYxFDASBgNV
++BAMMC2V4YW1wbGUuY29tMB4XDTE3MTIwODEzNDUyOFoXDTI3MTIwNjEzNDUyOFow
++FjEUMBIGA1UEAwwLZXhhbXBsZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAw
++ggEKAoIBAQCib40mJ1L1R27v6pWVRpN1mk2fgZ0ijN8+GXbAcB71czjsWXxIZq2t
++f9nT/MQ+N1cbXCjjV/8eq25SjcHvHhoPns+QrTLryN/b8ujU7IAozW4IJ19cYnnv
++E735VxZtB/Ne9gLbf2C/74E3kZG8OpK1+RJ6idK4Gz4GQBCBytFqdQKT9s/sYyPA
++vsc+VEzXLOS09TyTzx1XGjjeamTm3mGlOHRIDxYa+r9SaLfLWv/TJhRAzgQNMyiC
++JWeRu                                                      yzIHE
++NoB/U           Taken from the `ca.crt' file.              EFBlm
++gBKuj                                                      C/yWH
++5k/roRqkGDAWMRQwEgYDVQQDDAtleGFtcGxlLmNvbYIJAJs+aLUfaW2iMAwGA1Ud
++EwQFMAMBAf8wCwYDVR0PBAQDAgEGMA0GCSqGSIb3DQEBCwUAA4IBAQB5+uEAoFhW
++FGQmP/sbB6fOHNfhK3sYmzOjkQGn3pdsyQ1MvwcL0qCyH+iWbmjxCWlWJRC0WkP3
++W0T9oOeKGuDCTLzjuyZ4M/d4IcFCdOliY517eVCaeE5/uYFEaBseJjDqfEPqDKhr
++XETj/hcZxXf6DcveyYE3dtJ7NEsTyfXaKCJTvgPOiIE0pZ2rjJMcO2d0+DNqpk3M
++lp8oMPiq9HxjdvFM45oupY3nbQEM70p0NkOxGnrMesC0Hl++H0pmpn4OJM1GNdEf
++mi9DRkWOfYbyWhmDivEbsAHxv+i9xsC5ia/NY5/uKWB9klDTfl0Sp+XdnDUduuFz
++HboGYhuJxNQJ
+ -----END CERTIFICATE-----
+ </ca>
+ <cert>
+ -----BEGIN CERTIFICATE-----
+-...
++MIIDVTCCAj2gAwIBAgIQGLag/LPVbrqgd3eGx1drMDANBgkqhkiG9w0BAQsFADAW
++MRQwEgYDVQQDDAtleGFtcGxlLmNvbTAeFw0xNzEyMDgxMzU1MjhaFw0yNzEyMDYx
++MzU1MjhaMB0xGzAZBgNVBAMMEmxhcHRvcC5leGFtcGxlLmNvbTCCASIwDQYJKoZI
++hvcNAQEBBQADggEPADCCAQoCggEBALoBFuGdPD70L2vNGX2gE9EQ8gIwmCCF5Qll
++eJ4zShCpc77vnoPCFDYYUfR0re9nMceLnUBhDIGqq6EDWtHulnZuKuTF2VS9DoaR
++wbN/ttA9xfAsOgxycwk2pvKQtoi1vtYfZmBIuHu+8aBezUoHpcFZ8DZ7d6kPGNeY
++91SfJQHR9rMIMvHRz+3wBtyTiS2OqHWCTYEzpB7BsCejmZmgFduVcFh6HGx22Mv/
++jM4Gd                                                      uX3Yr
++kSNEq        Taken from the `_client_.crt' file.           BlzCB
++lDAJB                                                      GBgNV
++HSMEPzA9gBQZZoASro2Exk0prCyvAv8lh+ZP66EapBgwFjEUMBIGA1UEAwwLZXhh
++bXBsZS5jb22CCQCbPmi1H2ltojATBgNVHSUEDDAKBggrBgEFBQcDAjALBgNVHQ8E
++BAMCB4AwDQYJKoZIhvcNAQELBQADggEBABvBBoW17VJxXZmsV+PI1V5f9OWHcdrR
++ixIY4JoWGkzobn9Li+zlgvVPWjguL/VTXPX+J6aHcLW4w/hRsyDEYU9wNHjCNnFB
++CrYthURSVVC9ojUJ0KoUyTMomIQWCLpsv/Oa5rEcwYmjj9viLFN3FvyN7G6Z7jen
++DivtjNcf5cdy0k8uEYBarnf7OApP4XQSbE5Z+2YLyiGSMy5wxFCFeXH16/RcJp++
++PBE5ctCZqonO4wfGIs6PnnFK8kvyzeyr13bFVbZaMz0BmpOzNdMczl9SDyQw5FFf
++MvPE0YZQneJgJFXJKYu0NsyOsokyIXcUAsbzPenadKbP4X5OWdDQNt4=
+ -----END CERTIFICATE-----
+ </cert>
+ <key>
+ -----BEGIN PRIVATE KEY-----
+-...
++MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQC6ARbhnTw+9C9r
++zRl9oBPREPICMJggheUJZXieM0oQqXO+756DwhQ2GFH0dK3vZzHHi51AYQyBqquh
++A1rR7pZ2birkxdlUvQ6GkcGzf7bQPcXwLDoMcnMJNqbykLaItb7WH2ZgSLh7vvGg
++Xs1KB6XBWfA2e3epDxjXmPdUnyUB0fazCDLx0c/t8Abck4ktjqh1gk2BM6QewbAn
++o5mZoBXblXBYehxsdtjL/4zOBncCButs24pjRaAfQ4v0RKP/niFpQm+FPcE4lZb/
++EBkOwIF82UJxMJFhrl92K5EjRKk+Zm+WEatzfdI9xLc0VUz3T+LoNS7vsS1/1zPr
++6Rh7XrF9AgMBAAECggEAC8C33med/+hT+r7J5osv1Vz5vbOuWRe8whw8Q9q/yk+6
++tYzUekTQHB7rRsP8nYzqs04aEJBRRvwuvgzFN1CZB0CsyynJMraDbXNWRu5B8eSF
++VkilHlY4+JMQd3E3Z2n8dfEj+d9+cKs+/0AePpg/G/l/2SFyDSecDTtoHVu07eln
++pAU+W4WO0Dvx6hup5LOND3koBNTvYBeEk4GrB0W2Wr3lQV8X47zIOxVhFPfombDx
++6OuqOJPqZ0hfOa9vJJLNI0vzR79vSItJ95nFKE3yPawlUlGB8o42NQV+djtkJxxd
++2YLvZ                                                      iXF99
++4LPXC        Taken from the `_client_.key' file.           CNxoA
++3DMt8                                                      45/jv
++DuhmWd8y53yt/zIfaSCTIMa5ZQKBgQDBm4kAhqryw+BbIbSRzLwLxmK7qCrENHlC
++/Vp5qzo1PXw2AoNlQN4TbvQ3xWQZ4kdkJtUr0vDK6K4VR8o1GMm9fqNsdDTc2f1x
++q/a1s/iXVwDV6OFgyKcbPL5pAt+3vXVn79ZFknaxXEulWypOUdwosxhXXUXjZnwY
++KvE9OIAiOQKBgHH51UOGH23qyJio3Cv2jQETzghYgXwwDVK7k6/MIDzvIYvkdKxm
++IWJMxcZt72htU7rxgu2f0X+BL754UJmjcihRHXmFXn26vvv8OojEsn1DdJWfGae7
++np+p9QfqB00svpYbbA6L4j9glzNKdSc77mE4NuJdOn9b6zt5OXpVTyKtAoGAOk83
++sdrdPYRU292I3qiEsh8ruUzqpHERXGWljCNPwp0j/bhADoy81amDEBD5FvqZecZg
++SXScZOAzHeGjOt6eU94CJjXRffqBZGzgPtVXN21SqRocVuPXwFJJHqNo8ZOz+nu3
++UvjLmpsrhT+xvCjXX8KgwB8tX1GMalL0mPWdUbECgYEAmr6lsqd5UWlBzk3O/6Nf
++s90C9wKcDLyMjktu5fAk0pP/rZgfLcSc5pH1xIg/+ufktZqiOwDhm28Une4VDyuv
++q3po3yneF4CHVtNsg3J89xXTaCzyygCIRsqSmVwbGlDRSDftPytnB8vteMqrbPAk
++WOmXfzRj2ZsFLnldASN2jA8=
+ -----END PRIVATE KEY-----
+ </key>
+```
 
 [fw-gist]: https://gist.github.com/w2ak/88cf0aad6cb58cfc0c5083c467eb4619
 [privipv4]: https://en.wikipedia.org/wiki/Private_network#Private_IPv4_address_spaces
