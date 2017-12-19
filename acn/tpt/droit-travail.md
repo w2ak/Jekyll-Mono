@@ -98,6 +98,86 @@ Un changement de réglement intérieur est soumis à vérification et formalité
 
 # La formation du contrat de travail
 
+Critères de recrutement: compétences, âge légal, mais beaucoup de critères
+relèvent de la discrimination à l'embauche. On ne peut pas comme ça imposer
+l'âge, le sexe, la nationalité. On ne peut pas exiger le permis s'il n'est
+pas justifié par l'emploi.
+
+Lors de l'entretion d'embauche, on ne peut pas demander si le candidat est
+syndiqué, a une carte d'électeur.
+
+L'employeur vous signale que suite à l'entretien vous êtes accepté au sein
+de l'entreprise. Cela ne suffit évidemment pas pour qu'il y ait contrat de
+travail. Mais le contrat de travail n'est pas obligatoire. Pour un contrat
+à durée indéterminée il n'y a aucune obligation de le formaliser par écrit.
+
+Qu'est-ce qui est essentiel dans un contrat de travail ? Le début d'engagement,
+les horaires, congés, exigences, salaire, gratification, avantages en
+nature, confidentialité, lieu, nature du travail, fonction, sécurité sociale,
+période d'essai, clause de non-concurrence, clause de mobilité, clause de
+dédit-formation (engagement pour une durée minimale de travail post-formation).
+
+Donc pas d'obligation de faire un écrit mais c'est pas une bonne idée.
+
+Les éléments essentiels du contrat de travail&nbsp;:
+* La date d'engagement
+* La fonction, nature des tâches, statut
+* La contrepartie (rémunération)
+* Les horaires (temps complet, partiel)
+
+D'autres éléments&nbsp;:
+* Le lieu de travail éventuellement. À partir du moment où il est fixé on ne
+peut pas le modifier, il est mieux de ne pas le préciser. Si l'on prévoit
+de pouvoir changer le lieu de travail, on utilise une clause de mobilité.
+* Des clauses
+  * Période d'essai. Sinon, le contrat est définitif dès le premier jour. Elle
+  doit respecter une durée maximale. Elle peut être renouvelée une fois pour
+  la même durée au maximum.
+    * Deux mois pour les ouvriers et employés
+    * Trois pour les agents de maîtrise et techniciens
+    * Quatre pour les cadres
+  * Clause de mobilité. Zone géographique précisée. On juge la zone "trop large"
+  au cas par cas.
+  * Clause de non-concurrence. À compter de la fin du contrat de travail.
+    * Limitée dans le temps et l'espace (au cas par cas mais généralement
+    1 an à 2 ans)
+    * Évidemment restreinte à une activité spécifique
+    * Rémunérée par l'ancien employeur
+
+Période d'essai: en cas de maladie par exemple, on décale la période d'essai.
+Le salarié a un délai de 24h pour prévenir s'il est là depuis moins de 8 jours,
+48h au delà. L'employeur qui veut rompre doit prévenir avec un délai de 24h avant
+8 jours, 48h avant 1 mois, 2 semaines avant 3 mois, 1 mois ensuite. La période
+d'essai peut en revanche être rompue sans motivation.
+
+Clause de non-concurrence: si la clause est valable et vous allez travailler
+chez un concurrent, vous avez l'obligation (exécution de bonne foi) d'être clair
+sur le fait que vous avez une clause de non-concurrence.
+
+Clause de dédit-formation: formation payée par l'employeur, vous vous engagez
+à ne pas quitter l'entreprise dans une certaine période.
+
+Le salaire: grilles de salaire peuvent être fixées par l'entreprise, dans le
+respect des minima dans les conventions collectives, accords de branche. En
+fonction du poste il y a un coefficient, niveau, statut qui apparaît dans une
+grille de minima. Ces grilles sont négociées tous les ans avec les partenaires
+sociaux. Il peut y avoir une partie variable mais il y a une partie fixe minimale.
+
+Les congés: il y a des jours fériés. Le 1er mai est le seul jour qui est
+obligatoirement chômé (sauf dispositions d'ordre public pour les transports,
+usines à feu continu, etc.). Le 1er mai travaillé est donc doublement rémunéré.
+L'employeur peut imposer les périodes des quatre premières semaines de congés.
+
+Avantages en natures: non monayés. Logement de fonction, tickets restaurants,
+véhicule de fonction, etc.
+
+Lorsqu'il n'y a pas d'écrit, les informations sur la fiche de paie font toujours
+office de contrat de travail. Par exemple, il est important que le poste évolue
+correctement sur la fiche de paie.
+
+S'il y a juste mail « bon ok je vous prends » puis « finalement non », il
+n'y a pas rupture de contrat de travail mais rupture de pour-parler.
+
 # L'exécution de la relation de travail
 
 # La rupture de la relation de travail
