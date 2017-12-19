@@ -178,6 +178,85 @@ correctement sur la fiche de paie.
 S'il y a juste mail « bon ok je vous prends » puis « finalement non », il
 n'y a pas rupture de contrat de travail mais rupture de pour-parler.
 
+* Cas du CDD: de date à date ou à terme imprécis. Il doit être **obligatoirement
+écrit** cette fois-ci.
+
+Au-delà de la durée du CDD, ce dernier devient un CDI automatiquement. Si
+l'employeur voulait reprendre le salarié en CDD il y aurait un **délai de
+carence** d'un tiers de la durée du contrat (pour un contrat d'au moins 14 jours),
+et de la moitié pour une durée de contrat moindre. On n'applique pas ce délai
+s'il s'agit d'un poste différent, si l'on remplace une nouvelle absence du
+même salarié, s'il s'agit d'emplois saisonniers.
+
+Principe: le CDD quel que soit son motif ne peut avoir ni pour objet ni pour
+effet de pourvoir durablement un emploi lié à l'activité normale de l'entreprise.
+
+En cas de non respect de ces règles il y a souvent requalification du CDD en CDI.
+Indemnité de requalification: 1 mois de salaire.
+
+Dans le cas d'un CDD à terme imprécis il n'y a pas de durée maximale, en
+revanche.
+
+Il est possible de conclure un CDD dans plusieurs cas:
+* Travail saisonnier,
+* Surcroît d'activité,
+* Absence et remplacement d'autres salariés (maladie, maternité),
+* Contrats *d'usage* dans certains secteurs:
+  * Hôtellerie,
+  * Spectacle,
+  * Enseignement,
+  * Sport professionnel,
+  * Centres de loisirs,
+  * Activités de montage, démontage d'installations foraines, etc.
+
+La durée maximale de droit commun d'un CDD est **18 mois**, renouvelable deux
+fois maximum sans toutefois dépasser la durée maximale de 18 mois.
+
+Il n'est pas possible de recourir à un CDD dans certains buts:
+* Remplacement d'un salarié gréviste,
+
+Entrepreneur de travail temporaire: Personne physique ou morale dont l'activité
+exclisuve est de mttre à la disposition temporaire d'entreprises utilisatrices
+des salariés en fonction d'une qualification convenue qu'elle recrute et
+rémunère à cet effet.
+
+On a là une relation tri-partite entre le salarié, l'entreprise utilisatrice et
+la société d'intérim. Le salarié est employé de la société d'intérim sous un
+**contrat de mission**. Il travaille dans l'entreprise utilisatrice qui est elle
+cliente de la société d'intérim sous un **contrat de mise à disposition**. On
+retrouve dans cette situation les mêmes obligations légales.
+
+Juridiquement on peut se retrouver dans les mêmes situations de requalification
+en CDI mais plutôt auprès de l'entreprise utilisatrice, et l'indemnité de
+requalification n'est pas non plus à la charge de la société d'intérim.
+
+Indemnité de fin de mission ou de précarité égale à 10% de la rémunération totale
+brute. Elle n'est pas toujours due. En cas de faute grave, le salarié perd son
+droit à cette indemnité.
+
+On peut mettre fin à un CDD pour raison d'obtention d'un CDI. Le salarié ne
+peut alors prétendre à une indemnité de précarité.
+
+Causes de suspension du contrat de travail:
+* Maladie
+  * Hors maladie professionnelle (rhûme, blessé aux sports d'hiver, etc.)
+  * Non rémunéré dans ces conditions
+* Maladie professionnelle, accident du travail
+* Grève
+  * Avec préavis (par défaut de 5 jours) dans le public uniquement
+* Congé maternité, paternité, parental
+  * Paternité 11 jours
+  * Maternité 6 semaines avant la naissance et 10 après
+  * Parental durée de 1 an renouvelable jusqu'aux 3 ans de l'enfant
+  * On ne perd rien en ancienneté
+* Congé de solidarité familiale (e.g. accompagnement d'un proche en fin de vie)
+* Mariage - Décès
+* Formation
+* Congés payés, congés sans solde
+* Incarcération (ce n'est pas un motif de licenciement)
+* Congé pour création d'entreprise
+  * 1 an renouvelable une fois
+
 # L'exécution de la relation de travail
 
 # La rupture de la relation de travail
