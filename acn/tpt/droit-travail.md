@@ -257,6 +257,31 @@ Causes de suspension du contrat de travail:
 * Congé pour création d'entreprise
   * 1 an renouvelable une fois
 
-# L'exécution de la relation de travail
+# Cas pratique
 
-# La rupture de la relation de travail
+*La société BIG PEAR installée à Lille commercialise des logiciels de justice
+prédictive.*
+
+* 50 salariés
+* Une mésentente persiste entre l'adjoint au DRH et la DRH qui désorganise le service.
+* Mr Soft (DRH) est en arrêt maladie de manière répétée pour burn-out
+* La direction générale souhaite licencier Mr Soft.
+* Le personnel se met en grève et fait une pétition pour que soit virée la DRH (Me Buzy)
+qui a des méthodes managériales tyranniques.
+
+La direction annonce la fermeture du site et sa délocalisation en Pologne.
+
+Entreprise: obligation de mettre en place un plan de sauvegarde de l'entreprise (PSE)
+* aspect économique
+* aspect social
+
+Mr. Soft qui est en arrêt maladie de manière répétée: l'état de santé ne peut
+pas être un motif de licenciement, sinon c'est discriminatoire. Si les absences
+sont répétées et perturbent le bon fonctionnement de l'entreprise, nécessitant
+sont remplacement définitif, il est possible de mettre fin à ce contrat de travail.
+
+"Mais" le motif est burn out: rarement reconnu comme maladie professionnelle
+parce que c'est compliqué de faire la part des choses entre les causes personnelles
+et professionnelles. Si c'est bien reconnu comme maladie de travail le contrat de
+travail est protégé. Ici, l'employeur manque à son obligation de sécurité de
+résultat.

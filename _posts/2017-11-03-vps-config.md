@@ -257,6 +257,8 @@ root@server ~ % mkdir -p /var/www/example.com/html /var/www/example.com/logs
 root@server ~ % chmod 751 /var /var/www
 # Allow only root access to /var/www/example.com
 root@server ~ % chmod -R u=rwX,g=rX,o-rwx /var/www/example.com
+# Allow others to go through /var/www/example.com
+root@server ~ % chmod o+x /var/www/example.com
 # Add sticky bit (protects ownership) to /var/www/example.com/html
 root@server ~ % chmod +s /var/www/example.com/html
 # Allow reading access for www-data (the web server user) to /var/www/example.com/html
