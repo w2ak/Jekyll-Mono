@@ -4,7 +4,7 @@ title: Including figures in two-column LaTeX documents
 category:
  - computer-science
  - notes
-toc: true
+toc: false
 author: Clément Durand
 ---
 
