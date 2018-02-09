@@ -9,15 +9,94 @@ permalink: /projects/ansible-rancher-kubernetes/
 
 ---
 
+At first, this project focuses on trying out [Kubernetes][kubernetes]. This is a container
+management distribution that allows you to setup cloud services in containers
+on multiple machines, to manage availability, redundancy, load balancing, etc.
+
+Kubernetes is a professional solution sometimes difficult to install and maintain.
+In many cases, companies just pay cloud providers to do this kind of work. [Rancher][rancher]
+however gives an out-of-the-box solution to use several different container
+managements distributions, among which is Kubernetes.
+
+We tried to install experimental services on Kubernetes, which had the whole
+stack crash a lot of times. To avoid a painful three-hour-long installation from
+scratch after every crash, and to ease a possible deployment of multiple machines,
+we used the [Ansible][ansible] automation tool.
+
+[kubernetes]: https://kubernetes.io/
+[rancher]: https://rancher.com/
+[ansible]: https://www.ansible.com/
+
 # Overview of the environment
 
+## How the host works
+
+In the working server, the only host of our deployment, there are several
+virtualization layers. Our Ubuntu machine actually runs over the Virtualization
+technology of the VPS provider.
+
+Over Ubuntu, Rancher runs in a Docker container. From this point, everything is
+a Docker container. Rancher manages the containers providing Kubernetes, and
+they themselves manage the services that we run in Kubernetes.
+
 ![Server Overview](https://www.neze.fr/public/acn/nano/server-overview.svg)
+
+## How we control all of these small workers
+
+The control unit to setup and control this system is completely decentralized
+thanks to SSH (secure shell access) and APIs (application programming interfaces
+giving administration access through https).
+
+Ansible basically connects to the managed hosts via SSH to enforce the
+configuration we specified, and KubeControl interacts with the API of
+Kubernetes to manage web services.
 
 ![Global Overview](https://www.neze.fr/public/acn/nano/global-overview.svg)
 
 # A simple use case
 
+*Load Balancer using Kubernetes Deployment*
+
+We created a super simple webservice in a docker image from the [Docker Get Started][docker-get-started]
+tutorial. It actually shows a minimal web page with the hostname of the server.
+The hostname just allows us to differentiate the webservice instances and highlight
+load balancing.
+
+[docker-get-started]: https://docs.docker.com/get-started/part2
+
+Then we created a Kubernetes instance in Rancher on which we intend to launch
+our sample web service. The Kubernetes deployment is fully automatized with
+ansible, modulo a few human interactions that could also be automatic, and is
+demonstrated below.
+
+Finally, we run our web service in Kubernetes. Fully automatized as well, this
+deployment is actually three parts at three levels.
+
+* The web service is abstracted in Kubernetes as a **deployment**.
+
+* Underneath this abstraction layer, there are actually as many **pods** as
+  desired **replicas**. One pod is one instance of the service, i.e., one
+  container in our case but possibly several containers in other web services.
+  In other words, a pod is the finest granularity you can have in Kubernetes
+  where everything breaks down to **pods**.
+
+  There are then in the first demo step 2 instances of our web service running
+  in separate containers.
+
+* Over this is the availability layer. We **expose** our web service through
+  a load-balancing service making it publicly available.
+
+In the demonstration we also tried **scaling** our service, i.e., only changing
+the number of replicas of our already running service. When doing this in
+Kubernetes we can see pods being created and stopped depending on the number
+of desired replicas.
+
+![Kubernetes Overview](https://www.neze.fr/public/acn/nano/kubernetes.svg)
+
 # Demo
+
+Now let's go over the installation steps and try to understand how everything
+fits into the whole scheme.
 
 ## Step 1 - Start from a clean server
 
@@ -76,7 +155,7 @@ login page is accessible.
 
 ![Authentication](https://www.neze.fr/public/acn/nano/rancher-install-after.png)
 
-Next step is about setting up and activating a Kubernetes environment, i.e., a
+Next step in the Ansible script is about setting up and activating a Kubernetes environment, i.e., a
 container platform in rancher that will be managed by Kubernetes. Once the
 environment is setup in Rancher, we can see that Rancher is actually starting
 every required element of Kubernetes.
@@ -89,7 +168,7 @@ instance of Kubernetes.
 
 ![Kubernetes UI](https://www.neze.fr/public/acn/nano/kubernetes-install-after.png)
 
-With only this setup, we only have the controler part of Kubernetes. We register
+With only this setup, we only have the controler part of Kubernetes. Ansible registers
 a host that will be usable by Kubernetes as ressources. In our single-host use
 case, the registered host is the same as the controller host.
 
@@ -150,3 +229,11 @@ can see three new distinct instances.
 ![Kube Service](https://www.neze.fr/public/acn/nano/kubernetes-helloacn-service-rssdv.png)
 
 ![Kube Service](https://www.neze.fr/public/acn/nano/kubernetes-helloacn-service-wflhd.png)
+
+# Do it yourself !
+
+A lot of our work is actually available in a public [git repository][git-cn].
+We did not describe everything in this post but most of it can be understood from
+the config files and man pages of ansible, kubernetes, etc.
+
+[git-cn]: https://framagit.org/cn/public-server-admin
