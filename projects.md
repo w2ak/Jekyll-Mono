@@ -44,3 +44,19 @@ simultaneous connections.
 
   <a href="http://share.neze.fr/towards-the-worlds-fastest-file-server.pdf">Read more...</a>
 </details>
+
+## Rancher deployment with Ansible
+
+[Kubernetes][kubernetes] is a popular container management framework.
+Although it is generally difficult to install and setup,
+it can be setup through a working installation of [Rancher][rancher].
+
+In this project we automatized the deployment of such a setup with
+the [Ansible][ansible] tool. It was the occasion to discover this three
+tools.
+
+[Read more...]({% link projects/acn-nano.md %})
+
+[kubernetes]: https://kubernetes.io/
+[rancher]: https://rancher.com/
+[ansible]: https://www.ansible.com/
