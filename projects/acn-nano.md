@@ -24,7 +24,7 @@ permalink: /projects/ansible-rancher-kubernetes/
 
 * Launch the initial installation of the server
 
-  <asciinema-player src="/share/acn/nano/server-install.cast" cols="80" rows="24"></asciinema-player>
+  <asciinema-player src="https://share.neze.fr/acn/nano/server-install.cast" cols="80" rows="24"></asciinema-player>
 
   <!-- [![asciicast](https://asciinema.org/a/161756.png)](https://asciinema.org/a/161756) -->
 
