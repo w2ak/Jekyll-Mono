@@ -1,6 +1,6 @@
 ---
 layout: post
-title: NanoProject
+title: Kubernetes over Rancher with Ansible
 toc: false
 asciinema: true
 author: Clément Durand & Carolina De Senne Garcia
@@ -8,6 +8,10 @@ date: 2018-02-09
 permalink: /projects/ansible-rancher-kubernetes/
 
 ---
+
+# Overview of the environment
+
+# A simple use case
 
 # Demo
 
