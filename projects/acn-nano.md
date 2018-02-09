@@ -9,8 +9,9 @@ permalink: /projects/ansible-rancher-kubernetes/
 
 ---
 
+# Demo
 
-# Step 1 - Start from a clean server
+## Step 1 - Start from a clean server
 
 * Install Ubuntu on the server
 
@@ -20,14 +21,11 @@ permalink: /projects/ansible-rancher-kubernetes/
 
   ![HTTP Refused](/share/acn/nano/server-os-install-after.png)
 
-# Step 2 - Install and configure the server
+## Step 2 - Install and configure the server
 
 * Launch the initial installation of the server
 
-  <asciinema-player src="{{ site.baseurl }}/projects/nano-server-install.cast" cols="80" rows="24"></asciinema-player>
-
-  <script src="https://asciinema.org/a/161759.js" id="asciicast-161759" async></script>
-  <!-- [![asciicast](https://asciinema.org/a/161756.png)](https://asciinema.org/a/161756) -->
+  <script src="https://asciinema.org/a/161756.js" id="asciicast-161756" async></script>
 
 * During the installation, basic setup (users accounts, programs) is realized
   The nginx web server should get installed.
@@ -38,7 +36,7 @@ permalink: /projects/ansible-rancher-kubernetes/
 
   ![Perdu](/share/acn/nano/server-install-after.png)
 
-# Step 3 - Install, launch and configure Rancher
+## Step 3 - Install, launch and configure Rancher
 
 * Before installing rancher, there is nothing behind the nginx proxy
 
@@ -46,7 +44,7 @@ permalink: /projects/ansible-rancher-kubernetes/
 
 * Launch the rancher setup
 
-  [![asciicast](https://asciinema.org/a/161759.png)](https://asciinema.org/a/161759)
+  <script src="https://asciinema.org/a/161759.js" id="asciicast-161759" async></script>
 
 * The script first configures authentication
 
@@ -67,17 +65,17 @@ permalink: /projects/ansible-rancher-kubernetes/
 
   ![Kubernetes Host Up](/share/acn/nano/kubernetes-install-host-after.png)
 
-# Step 4 - Configure kubectl to control Kubernetes
+## Step 4 - Configure kubectl to control Kubernetes
 
 * The install script gets a token and configures kubectl on the host
 
-  [![asciicast](https://asciinema.org/a/161747.png)](https://asciinema.org/a/161747)
+  <script src="https://asciinema.org/a/161747.js" id="asciicast-161747" async></script>
 
-# Step 5 - Run a simple web service with load balancing
+## Step 5 - Run a simple web service with load balancing
 
 * The install script has kubectl running the service for us
 
-  [![asciicast](https://asciinema.org/a/161750.png)](https://asciinema.org/a/161750)
+  <script src="https://asciinema.org/a/161750.js" id="asciicast-161750" async></script>
 
 * Afterwards, the Kubernetes UI shows services and two instances of the webservice are accessible
 
@@ -87,11 +85,11 @@ permalink: /projects/ansible-rancher-kubernetes/
 
   ![Kube Service](/share/acn/nano/kubernetes-helloacn-service-ng4m4.png)
 
-# Step 6 - Try some scaling
+## Step 6 - Try some scaling
 
 * Here, the script has kubectl changing the number of replicas
 
-  [![asciicast](https://asciinema.org/a/161751.png)](https://asciinema.org/a/161751)
+  <script src="https://asciinema.org/a/161751.js" id="asciicast-161751" async></script>
 
 * Afterwards, the Kubernetes UI shows 3 more pods that are also accessible via http
 
