@@ -13,6 +13,8 @@ permalink: /projects/ansible-rancher-kubernetes/
 
 ![Server Overview](https://www.neze.fr/public/acn/nano/server-overview.svg)
 
+![Global Overview](https://www.neze.fr/public/acn/nano/global-overview.svg)
+
 # A simple use case
 
 # Demo
