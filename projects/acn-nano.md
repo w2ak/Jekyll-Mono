@@ -230,6 +230,10 @@ can see three new distinct instances.
 
 ![Kube Service](https://www.neze.fr/public/acn/nano/kubernetes-helloacn-service-wflhd.png)
 
+# Lessons learned
+
+![Lessons learned](https://www.neze.fr/public/acn/nano/lessons-learned.svg)
+
 # Do it yourself !
 
 A lot of our work is actually available in a public [git repository][git-cn].
