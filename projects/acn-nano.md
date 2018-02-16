@@ -122,6 +122,8 @@ with the *playbook* (list of tasks to realize).
   <script src="https://asciinema.org/a/161756.js" id="asciicast-161756" async></script>
 </div>
 
+[Link to the demo](https://asciinema.org/a/161756)
+
 During this first part of the installation, ansible realizes a basic setup of
 the server to provide a healthy environment. It configures users accounts, a
 safe SSH access, installs programs, configures docker and the nginx web server.
@@ -148,6 +150,8 @@ installation are detailed afterwards.
 <div style="text-align:center">
   <script src="https://asciinema.org/a/161759.js" id="asciicast-161759" async></script>
 </div>
+
+[Link to the demo](https://asciinema.org/a/161759)
 
 The Rancher interface is publicly accessible so the first setup step configures
 authentication in Rancher. Once Rancher is launched and has authentication, the
@@ -190,6 +194,8 @@ valid `kubectl` configuration on the host.
   <script src="https://asciinema.org/a/161747.js" id="asciicast-161747" async></script>
 </div>
 
+[Link to the demo](https://asciinema.org/a/161747)
+
 ## Step 5 - Run a simple web service with load balancing
 
 Ansible first checks if the web service we want is already running and accessible.
@@ -199,6 +205,8 @@ the number of replicas is different in the configuration.
 <div style="text-align:center">
   <script src="https://asciinema.org/a/161750.js" id="asciicast-161750" async></script>
 </div>
+
+[Link to the demo](https://asciinema.org/a/161750)
 
 In the User Interface of Kubernetes we can see the two replicas of the web
 service that was started by Ansible.
@@ -218,6 +226,8 @@ desired scale.
 <div style="text-align:center">
   <script src="https://asciinema.org/a/161751.js" id="asciicast-161751" async></script>
 </div>
+
+[Link to the demo](https://asciinema.org/a/161751)
 
 The User Interface shows more replicas, and when you access the web service you
 can see three new distinct instances.
