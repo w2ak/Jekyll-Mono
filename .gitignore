@@ -10,5 +10,4 @@ node_modules
 package.json
 *.pdf
 __pycache__
-*.asc
 *.bak
