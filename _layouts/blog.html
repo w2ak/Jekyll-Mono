@@ -40,7 +40,7 @@
     
   {% if page.toc and page.toc == "large" %}
   <div class="largetoc" style="{{ page.toc-style }}">
-    {{ content | toc_only }}
+    {% toc %}
   </div>
   {% endif %}
 
