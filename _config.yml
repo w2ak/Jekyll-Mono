@@ -26,8 +26,8 @@ disqus:
 google_analytics:
 mathjax: true
 
-url: http://blog.neze.fr
-baseurl: ""
+url: https://www.drd.ovh/~neze/blog
+baseurl: /~neze/blog
 
 permalink: /:year/:month/:title.html
 
